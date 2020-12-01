@@ -1,0 +1,20 @@
+.now-playing-movies-wrapper {
+  bottom: 0;
+  color: white;
+  left: 240px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.now-playing-movies-wrapper h1 {
+  text-align: center;
+}
+
+.now-playing-movies-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 16px;
+}

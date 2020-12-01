@@ -1,0 +1,24 @@
+.movie-card-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 250px;
+}
+
+.movie-card-poster {
+  border-radius: 20px;
+  height: 300px;
+  overflow: hidden;
+}
+
+.movie-card-poster img {
+  height: 100%;
+}
+
+.movie-card-info {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 200px;
+}
