@@ -8,21 +8,16 @@ function googleSignIn() {
   firebase.auth().signInWithRedirect(provider);
 }
 
-function LoginPage() {
-  let firebaseConfig = {
-    apiKey: '',
-    authDomain: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
-  };
-  firebase.initializeApp(firebaseConfig);
+interface LoginPageProps {
+  onLogin: Function;
+}
 
+function LoginPage(props: LoginPageProps) {
   let history = useHistory();
 
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
+      props.onLogin(user);
       history.push('/');
     }
   });
