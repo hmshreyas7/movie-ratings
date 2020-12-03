@@ -90,7 +90,7 @@ function MovieGrid() {
       <h1>Now Playing</h1>
       <div className='now-playing-movies-grid'>
         {[...nowPlaying]
-          .sort((a, b) => a.Title.localeCompare(b.Title))
+          .sort((a, b) => ('' + a.Title).localeCompare(b.Title))
           .map((movie: OMDbMovie) => (
             <MovieCard
               key={movie.imdbID}
