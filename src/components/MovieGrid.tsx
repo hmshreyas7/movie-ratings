@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MovieCard from './MovieCard';
+import dotenv from 'dotenv';
 
 function MovieGrid() {
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
   const omdbAPI = 'http://www.omdbapi.com';
-  const tmdbKey = '';
-  const omdbKey = '';
+
+  dotenv.config();
+  const tmdbKey = process.env.REACT_APP_TMDB_API_KEY;
+  const omdbKey = process.env.REACT_APP_OMDB_API_KEY;
+
   const nowPlayingMovies =
     tmdbAPI + `/now_playing?api_key=${tmdbKey}&language=en-US&page=1`;
 
@@ -83,7 +87,7 @@ function MovieGrid() {
       .catch((err) => {
         console.log(err);
       });
-  }, [nowPlayingMovies]);
+  }, [nowPlayingMovies, omdbKey, tmdbKey]);
 
   return (
     <div className='now-playing-movies-wrapper'>
