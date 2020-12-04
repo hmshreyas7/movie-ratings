@@ -8,6 +8,11 @@ function googleSignIn() {
   firebase.auth().signInWithRedirect(provider);
 }
 
+function facebookSignIn() {
+  let provider = new firebase.auth.FacebookAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+}
+
 interface LoginPageProps {
   onLogin: Function;
 }
@@ -25,6 +30,7 @@ function LoginPage(props: LoginPageProps) {
   return (
     <div className='login-wrapper'>
       <button onClick={googleSignIn}>Sign in with Google</button>
+      <button onClick={facebookSignIn}>Sign in with Facebook</button>
     </div>
   );
 }
