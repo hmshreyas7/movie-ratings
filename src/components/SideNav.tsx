@@ -3,15 +3,10 @@ import Avatar from './Avatar';
 import NavLinks from './NavLinks';
 import SearchBar from './SearchBar';
 
-interface SideNavProps {
-  userPhoto: string;
-  userName: string;
-}
-
-function SideNav(props: SideNavProps) {
+function SideNav() {
   return (
     <div className='side-nav-drawer'>
-      <Avatar userPhoto={props.userPhoto} userName={props.userName} />
+      <Avatar />
       <SearchBar />
       <NavLinks />
     </div>

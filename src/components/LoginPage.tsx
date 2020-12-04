@@ -2,6 +2,8 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../actions';
 
 function googleSignIn() {
   let provider = new firebase.auth.GoogleAuthProvider();
@@ -13,16 +15,13 @@ function facebookSignIn() {
   firebase.auth().signInWithRedirect(provider);
 }
 
-interface LoginPageProps {
-  onLogin: Function;
-}
-
-function LoginPage(props: LoginPageProps) {
+function LoginPage() {
   let history = useHistory();
+  let dispatch = useDispatch();
 
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-      props.onLogin(user);
+      dispatch(login(user));
       history.push('/');
     }
   });

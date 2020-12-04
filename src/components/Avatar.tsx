@@ -1,19 +1,19 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import defaultAvatar from '../assets/default-user-avatar.png';
+import firebase from 'firebase/app';
 
-interface AvatarProps {
-  userPhoto: string;
-  userName: string;
+interface RootState {
+  user: firebase.User;
 }
 
-function Avatar(props: AvatarProps) {
+function Avatar() {
+  const user = useSelector((state: RootState) => state.user);
+
   return (
     <div className='avatar-wrapper'>
-      <img
-        src={props.userPhoto ? props.userPhoto : defaultAvatar}
-        alt='Avatar'
-      />
-      <p>{props.userName ? props.userName : 'Guest'}</p>
+      <img src={user.photoURL ? user.photoURL : defaultAvatar} alt='Avatar' />
+      <p>{user.displayName ? user.displayName : 'Guest'}</p>
     </div>
   );
 }

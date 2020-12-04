@@ -5,6 +5,9 @@ import './index.scss';
 import { BrowserRouter as Router } from 'react-router-dom';
 import firebase from 'firebase/app';
 import dotenv from 'dotenv';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import rootReducer from './reducers';
 
 dotenv.config();
 let firebaseConfig = {
@@ -17,9 +20,13 @@ let firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
+let store = createStore(rootReducer);
+
 ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );
