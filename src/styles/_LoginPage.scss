@@ -1,7 +1,38 @@
 .login-wrapper {
+  align-items: center;
   bottom: 0;
+  display: flex;
+  justify-content: center;
   left: 240px;
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.social-login-wrapper {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.google-signin-button {
+  background: white;
+  @include social-signin-button;
+}
+
+.google-signin-button::before {
+  background-image: url('../assets/google-logo.png');
+  @include social-signin-button-logo;
+}
+
+.facebook-signin-button {
+  background: #4267b2;
+  color: white;
+  @include social-signin-button;
+}
+
+.facebook-signin-button::before {
+  background-image: url('../assets/fb-logo.png');
+  @include social-signin-button-logo;
 }

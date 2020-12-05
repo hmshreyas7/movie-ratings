@@ -1,0 +1,17 @@
+@mixin social-signin-button {
+  align-items: center;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px;
+}
+
+@mixin social-signin-button-logo {
+  background-size: 24px;
+  content: '';
+  height: 24px;
+  width: 24px;
+}
