@@ -27,14 +27,24 @@ function LoginPage() {
   });
 
   return (
-    <div className='login-wrapper'>
-      <div className='social-login-wrapper'>
-        <button className='google-signin-button' onClick={googleSignIn}>
-          Sign in with Google
-        </button>
-        <button className='facebook-signin-button' onClick={facebookSignIn}>
-          Sign in with Facebook
-        </button>
+    <div className='login-page-wrapper'>
+      <div className='login-options-wrapper'>
+        <div className='social-login-wrapper'>
+          <button className='google-signin-button' onClick={googleSignIn}>
+            Sign in with Google
+          </button>
+          <button className='facebook-signin-button' onClick={facebookSignIn}>
+            Sign in with Facebook
+          </button>
+        </div>
+        <div className='standard-login-wrapper'>
+          <input type='email' placeholder='Email' />
+          <input type='password' placeholder='Password' />
+          <div className='standard-login-buttons-wrapper'>
+            <input type='submit' value='Login' />
+            <input type='button' value='Sign Up' />
+          </div>
+        </div>
       </div>
     </div>
   );
