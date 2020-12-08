@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useHistory } from 'react-router-dom';
@@ -19,12 +19,18 @@ function LoginPage() {
   let history = useHistory();
   let dispatch = useDispatch();
 
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      dispatch(login(user));
-      history.push('/');
-    }
-  });
+  useEffect(() => {
+    let unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        dispatch(login(user));
+        history.push('/');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch, history]);
 
   const goToSignUp = () => {
     history.push('/signup');
