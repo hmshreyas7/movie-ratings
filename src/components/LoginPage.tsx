@@ -26,6 +26,10 @@ function LoginPage() {
     }
   });
 
+  const goToSignUp = () => {
+    history.push('/signup');
+  };
+
   return (
     <div className='login-page-wrapper'>
       <div className='login-options-wrapper'>
@@ -42,7 +46,7 @@ function LoginPage() {
           <input type='password' placeholder='Password' />
           <div className='standard-login-buttons-wrapper'>
             <input type='submit' value='Login' />
-            <input type='button' value='Sign Up' />
+            <input type='button' value='Sign Up' onClick={goToSignUp} />
           </div>
         </div>
       </div>

@@ -1,0 +1,22 @@
+.signup-page-wrapper {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 240px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.signup-module-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.signup-module-wrapper input {
+  outline: none;
+  padding: 8px;
+}

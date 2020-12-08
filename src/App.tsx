@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import MovieGrid from './components/MovieGrid';
 import SideNav from './components/SideNav';
+import SignUpPage from './components/SignUpPage';
 
 function App() {
   return (
@@ -11,6 +12,9 @@ function App() {
       <Switch>
         <Route path='/login'>
           <LoginPage />
+        </Route>
+        <Route path='/signup'>
+          <SignUpPage />
         </Route>
         <Route path='/'>
           <MovieGrid />
