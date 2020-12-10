@@ -1,0 +1,20 @@
+.search-page-wrapper {
+  bottom: 0;
+  color: white;
+  left: 240px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.search-page-wrapper h1 {
+  text-align: center;
+}
+
+.search-results-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 16px;
+}

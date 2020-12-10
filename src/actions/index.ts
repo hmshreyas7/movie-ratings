@@ -6,3 +6,10 @@ export const login = (user: firebase.User) => {
         payload: user
     }
 }
+
+export const search = (query: string) => {
+    return {
+        type: 'SEARCH',
+        payload: query
+    }
+}
