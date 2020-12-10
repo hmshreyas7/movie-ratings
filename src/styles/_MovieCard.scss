@@ -7,13 +7,18 @@
 }
 
 .movie-card-poster {
+  align-items: center;
   border-radius: 20px;
+  display: flex;
   height: 300px;
+  justify-content: center;
+  max-width: 225px;
   overflow: hidden;
   position: relative;
 }
 
 .movie-card-poster img {
+  flex-shrink: 0;
   height: 100%;
 }
 
