@@ -10,10 +10,38 @@
   border-radius: 20px;
   height: 300px;
   overflow: hidden;
+  position: relative;
 }
 
 .movie-card-poster img {
   height: 100%;
+}
+
+.movie-card-overlay {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.movie-card-overlay:hover {
+  background-color: #00000080;
+}
+
+.movie-card-overlay button {
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  display: none;
+  padding: 8px 16px;
+}
+
+.movie-card-overlay:hover button {
+  display: unset;
 }
 
 .movie-card-info {
