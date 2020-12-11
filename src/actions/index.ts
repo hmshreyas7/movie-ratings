@@ -7,6 +7,12 @@ export const login = (user: firebase.User) => {
     }
 }
 
+export const logout = () => {
+    return {
+        type: 'LOGOUT'
+    }
+}
+
 export const search = (query: string) => {
     return {
         type: 'SEARCH',
