@@ -1,18 +1,32 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import dotenv from 'dotenv';
 import axios from 'axios';
 import MovieCard from './MovieCard';
-import dotenv from 'dotenv';
 
-function MovieGrid() {
+interface MovieGridProps {
+  isSearch: boolean;
+}
+
+interface RootState {
+  searchQuery: string;
+}
+
+function MovieGrid(props: MovieGridProps) {
+  let searchQuery = useSelector((state: RootState) => state.searchQuery);
+
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
+  const tmdbSearchAPI = 'https://api.themoviedb.org/3/search';
   const omdbAPI = 'http://www.omdbapi.com';
 
   dotenv.config();
   const tmdbKey = process.env.REACT_APP_TMDB_API_KEY;
   const omdbKey = process.env.REACT_APP_OMDB_API_KEY;
 
-  const nowPlayingMovies =
-    tmdbAPI + `/now_playing?api_key=${tmdbKey}&language=en-US&page=1`;
+  const tmdbMovies = props.isSearch
+    ? tmdbSearchAPI +
+      `/movie?api_key=${tmdbKey}&language=en-US&query=${searchQuery}&page=1&include_adult=false`
+    : tmdbAPI + `/now_playing?api_key=${tmdbKey}&language=en-US&page=1`;
 
   type TMDbMovie = Readonly<{
     adult: boolean;
@@ -58,11 +72,13 @@ function MovieGrid() {
     Response: string;
   }>;
 
-  let [nowPlaying, setNowPlaying] = useState<Array<OMDbMovie>>([]);
+  let [movies, setMovies] = useState<Array<OMDbMovie>>([]);
 
   useEffect(() => {
+    setMovies([]);
+
     axios
-      .get(nowPlayingMovies)
+      .get(tmdbMovies)
       .then((res) => {
         let movies: Array<TMDbMovie> = res.data.results;
 
@@ -77,7 +93,7 @@ function MovieGrid() {
               return axios.get(movieDetails);
             })
             .then((res) => {
-              setNowPlaying((prevNowPlaying) => [...prevNowPlaying, res.data]);
+              setMovies((prevMovies) => [...prevMovies, res.data]);
             })
             .catch((err) => {
               console.log(err);
@@ -87,13 +103,16 @@ function MovieGrid() {
       .catch((err) => {
         console.log(err);
       });
-  }, [nowPlayingMovies, omdbKey, tmdbKey]);
+  }, [tmdbKey, omdbKey, tmdbMovies]);
 
   return (
-    <div className='now-playing-movies-wrapper'>
-      <h1>Now Playing</h1>
-      <div className='now-playing-movies-grid'>
-        {[...nowPlaying]
+    <div className='movie-grid-wrapper'>
+      {!props.isSearch && <h1>Now Playing</h1>}
+      {props.isSearch && searchQuery.length > 0 && (
+        <h1>Showing results for "{searchQuery}"</h1>
+      )}
+      <div className='movie-grid'>
+        {[...movies]
           .sort((a, b) => ('' + a.Title).localeCompare(b.Title))
           .map((movie: OMDbMovie) => (
             <MovieCard
@@ -107,5 +126,9 @@ function MovieGrid() {
     </div>
   );
 }
+
+MovieGrid.defaultProps = {
+  isSearch: false,
+};
 
 export default MovieGrid;

@@ -1,4 +1,4 @@
-.now-playing-movies-wrapper {
+.movie-grid-wrapper {
   bottom: 0;
   color: white;
   left: 240px;
@@ -7,11 +7,11 @@
   top: 0;
 }
 
-.now-playing-movies-wrapper h1 {
+.movie-grid-wrapper h1 {
   text-align: center;
 }
 
-.now-playing-movies-grid {
+.movie-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
