@@ -1,0 +1,20 @@
+.home-wrapper {
+  color: #153f3c;
+  cursor: pointer;
+  margin: 16px auto;
+  width: fit-content;
+}
+
+.home-wrapper a {
+  color: unset;
+  text-decoration: none;
+}
+
+$letterColors: #f5b342, #ef564d, #019ec9, #6bb86a;
+
+@for $i from 1 through length($letterColors) {
+  $color: nth($letterColors, $i);
+  .home-wrapper span:nth-child(#{$i}) {
+    color: $color;
+  }
+}
