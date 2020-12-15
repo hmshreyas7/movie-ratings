@@ -19,3 +19,10 @@ export const search = (query: string) => {
         payload: query
     }
 }
+
+export const viewMovieDetails = (movie: OMDbMovie) => {
+    return {
+        type: 'VIEW_MOVIE_DETAILS',
+        payload: movie
+    }
+}

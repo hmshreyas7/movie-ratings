@@ -115,12 +115,7 @@ function MovieGrid(props: MovieGridProps) {
         {[...movies]
           .sort((a, b) => ('' + a.Title).localeCompare(b.Title))
           .map((movie: OMDbMovie) => (
-            <MovieCard
-              key={movie.imdbID}
-              title={movie.Title}
-              rating={movie.imdbRating}
-              poster={movie.Poster}
-            />
+            <MovieCard key={movie.imdbID} movieInfo={movie} />
           ))}
       </div>
     </div>

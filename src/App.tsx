@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import MovieGrid from './components/MovieGrid';
+import MoviePage from './components/MoviePage';
 import SideNav from './components/SideNav';
 import SignUpPage from './components/SignUpPage';
 
@@ -18,6 +19,9 @@ function App() {
         </Route>
         <Route path='/search'>
           <MovieGrid isSearch={true} />
+        </Route>
+        <Route path='/movie/:id'>
+          <MoviePage />
         </Route>
         <Route path='/'>
           <MovieGrid />
