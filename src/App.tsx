@@ -5,6 +5,7 @@ import MovieGrid from './components/MovieGrid';
 import MoviePage from './components/MoviePage';
 import SideNav from './components/SideNav';
 import SignUpPage from './components/SignUpPage';
+import UserPage from './components/UserPage';
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
         </Route>
         <Route path='/movie/:id'>
           <MoviePage />
+        </Route>
+        <Route path='/user'>
+          <UserPage />
         </Route>
         <Route path='/'>
           <MovieGrid />

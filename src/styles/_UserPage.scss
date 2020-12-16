@@ -1,0 +1,27 @@
+.user-page-wrapper {
+  bottom: 0;
+  color: white;
+  left: 240px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.user-page-profile {
+  display: flex;
+}
+
+.user-page-avatar img {
+  height: 144px;
+  width: 144px;
+}
+
+.user-page-avatar p {
+  display: none;
+}
+
+.user-page-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import defaultAvatar from '../assets/default-user-avatar.png';
 import firebase from 'firebase/app';
 import dotenv from 'dotenv';
+import { useHistory } from 'react-router-dom';
 
 interface RootState {
   user: firebase.User;
@@ -20,6 +21,13 @@ function setAvatarImage(photoURL: string) {
 
 function Avatar() {
   const user = useSelector((state: RootState) => state.user);
+  let history = useHistory();
+
+  const handleClick = () => {
+    if (user.displayName) {
+      history.push('/user');
+    }
+  };
 
   return (
     <div className='avatar-wrapper'>
@@ -27,7 +35,12 @@ function Avatar() {
         src={user.photoURL ? setAvatarImage(user.photoURL) : defaultAvatar}
         alt='Avatar'
       />
-      <p>{user.displayName ? user.displayName : 'Guest'}</p>
+      <p
+        onClick={handleClick}
+        style={user.displayName ? { cursor: 'pointer' } : {}}
+      >
+        {user.displayName ? user.displayName : 'Guest'}
+      </p>
     </div>
   );
 }
