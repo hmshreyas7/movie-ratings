@@ -8,12 +8,11 @@ import { RootState } from '../rootState';
 interface RatingDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  movieTitle: string;
-  movieID: string;
+  movieInfo: OMDbMovie;
 }
 
 function RatingDialog(props: RatingDialogProps) {
-  const { isOpen, onClose, movieTitle, movieID } = props;
+  const { isOpen, onClose, movieInfo } = props;
   let [rating, setRating] = useState(0);
   let [ratingHover, setRatingHover] = useState(-1);
   const user = useSelector((state: RootState) => state.user);
@@ -55,7 +54,7 @@ function RatingDialog(props: RatingDialogProps) {
     axios
       .post('http://localhost:5000/rate', {
         userID: user.uid,
-        movieID: movieID,
+        movie: movieInfo,
         rating: rating,
       })
       .then((res) => {
@@ -73,7 +72,7 @@ function RatingDialog(props: RatingDialogProps) {
     <Dialog className='rating-dialog' onClose={handleClose} open={isOpen}>
       <DialogTitle id='simple-dialog-title'>
         {ratingHover === -1 && rating === 0
-          ? `Select rating for "${movieTitle}"`
+          ? `Select rating for "${movieInfo.Title}"`
           : hoverLabels[ratingHover === -1 ? rating : ratingHover]}
       </DialogTitle>
       <Rating

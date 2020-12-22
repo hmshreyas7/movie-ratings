@@ -25,3 +25,11 @@
   flex-direction: column;
   justify-content: center;
 }
+
+.user-page-watchstats {
+  display: flex;
+  flex-direction: column;
+  font-size: larger;
+  gap: 16px;
+  padding: 16px;
+}

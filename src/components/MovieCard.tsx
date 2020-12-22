@@ -40,8 +40,7 @@ function MovieCard(props: MovieCardProps) {
           <RatingDialog
             isOpen={isDialogOpen}
             onClose={handleDialogClose}
-            movieTitle={props.movieInfo.Title}
-            movieID={props.movieInfo.imdbID}
+            movieInfo={props.movieInfo}
           />
           <button onClick={handleAdd}>Add</button>
           <button onClick={handleView}>View</button>
