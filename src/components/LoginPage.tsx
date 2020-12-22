@@ -4,6 +4,7 @@ import 'firebase/auth';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../actions';
+import axios from 'axios';
 
 function googleSignIn() {
   let provider = new firebase.auth.GoogleAuthProvider();
@@ -28,6 +29,20 @@ function LoginPage() {
       if (user) {
         dispatch(login(user));
         history.push('/');
+
+        axios
+          .post('http://localhost:5000/login', {
+            _id: user.uid,
+            name: user.displayName,
+            joinDateTime: user.metadata.creationTime,
+            lastSignInDateTime: user.metadata.lastSignInTime,
+          })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     });
 
