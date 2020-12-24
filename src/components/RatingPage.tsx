@@ -5,6 +5,7 @@ import { genres, sorts } from '../filterSortOptions';
 import { RootState } from '../rootState';
 import RatingCard from './RatingCard';
 import Select from 'react-select';
+import { useHistory } from 'react-router-dom';
 
 type SelectedOption = {
   value: string;
@@ -19,6 +20,7 @@ function RatingPage() {
     sortSetting: {} as SelectedOption,
   });
   let [ratingCount, setRatingCount] = useState(0);
+  let history = useHistory();
 
   const handleChange = (selected: any, e: any) => {
     const name = e.name;
@@ -75,13 +77,22 @@ function RatingPage() {
       });
   }, [user.uid]);
 
+  const goToRatingStatsPage = () => {
+    history.push('/rating-stats');
+  };
+
   return (
     <div className='rating-page-wrapper'>
-      {movies.length > 0 && (
-        <h1>
-          {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}
-        </h1>
-      )}
+      <div className='rating-page-info-wrapper'>
+        {movies.length > 0 && (
+          <h1>
+            {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}
+          </h1>
+        )}
+        <div className='stats-button' onClick={goToRatingStatsPage}>
+          Stats
+        </div>
+      </div>
       <div className='filter-sort'>
         <Select
           isMulti

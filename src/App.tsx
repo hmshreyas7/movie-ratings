@@ -4,6 +4,7 @@ import LoginPage from './components/LoginPage';
 import MovieGrid from './components/MovieGrid';
 import MoviePage from './components/MoviePage';
 import RatingPage from './components/RatingPage';
+import RatingStatsPage from './components/RatingStatsPage';
 import SideNav from './components/SideNav';
 import SignUpPage from './components/SignUpPage';
 import UserPage from './components/UserPage';
@@ -30,6 +31,9 @@ function App() {
         </Route>
         <Route path='/ratings'>
           <RatingPage />
+        </Route>
+        <Route path='/rating-stats'>
+          <RatingStatsPage />
         </Route>
         <Route path='/'>
           <MovieGrid />

@@ -249,6 +249,45 @@ app.get('/movieratings/:userID', (req, res) => {
   });
 });
 
+app.get('/movie-rating-stats/:userID', (req, res) => {
+  const userID = req.params.userID;
+  let userMovieRatings = Array<MovieRating>();
+
+  User.findById(userID)
+    .then((response) => {
+      if (response) {
+        userMovieRatings = response.get('movieRatings');
+        let avgRating = 0,
+          ratingDistribution: Record<number, number> = {
+            10: 0,
+            9: 0,
+            8: 0,
+            7: 0,
+            6: 0,
+            5: 0,
+            4: 0,
+            3: 0,
+            2: 0,
+            1: 0,
+          };
+
+        userMovieRatings.forEach((movieRating) => {
+          avgRating += movieRating.rating;
+          ratingDistribution[movieRating.rating] += 1;
+        });
+
+        res.send({
+          totalRatings: userMovieRatings.length,
+          avgRating: (avgRating / userMovieRatings.length).toFixed(2),
+          ratingDistribution: ratingDistribution,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

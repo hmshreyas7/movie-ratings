@@ -1,0 +1,38 @@
+.rating-stats-page-wrapper {
+  bottom: 0;
+  color: white;
+  left: 240px;
+  margin: 16px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.rating-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.rating-row {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.rating-row div:first-child {
+  width: 16px;
+}
+
+.rating-bar-wrapper {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 8px;
+}
+
+.rating-bar {
+  background-color: #4d6d6b;
+  height: 32px;
+}
