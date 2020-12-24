@@ -1,0 +1,24 @@
+.rating-page-wrapper {
+  bottom: 0;
+  color: white;
+  left: 240px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.rating-page-wrapper h1 {
+  text-align: center;
+}
+
+.filter-sort {
+  align-items: center;
+  color: black;
+  display: flex;
+  gap: 16px;
+  margin: 16px;
+}
+
+.filter-sort > div {
+  flex: 1;
+}

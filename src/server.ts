@@ -32,6 +32,7 @@ const User = mongoose.model('User', userSchema);
 const movieSchema = new mongoose.Schema({
   _id: String,
   title: String,
+  poster: String,
   genres: String,
   runtime: String,
   releaseDate: String,
@@ -92,6 +93,7 @@ app.post('/rate', (req, res) => {
         const newMovie = new Movie({
           _id: movie.imdbID,
           title: movie.Title,
+          poster: movie.Poster,
           genres: movie.Genre,
           runtime: movie.Runtime,
           releaseDate: movie.Released,
@@ -168,38 +170,81 @@ app.get('/watchstats/:userID', (req, res) => {
             }
           });
         })
-      ).then((response) => {
-        for (const genre in ratingsByGenre) {
-          favoriteGenres[genre] = (
-            ratingsByGenre[genre].reduce((val, acc) => acc + val) /
-            ratingsByGenre[genre].length
-          ).toFixed(2);
-        }
+      )
+        .then((response) => {
+          for (const genre in ratingsByGenre) {
+            favoriteGenres[genre] = (
+              ratingsByGenre[genre].reduce((val, acc) => acc + val) /
+              ratingsByGenre[genre].length
+            ).toFixed(2);
+          }
 
-        for (const decade in ratingsByDecade) {
-          favoriteDecades[decade] = (
-            ratingsByDecade[decade].reduce((val, acc) => acc + val) /
-            ratingsByDecade[decade].length
-          ).toFixed(2);
-        }
+          for (const decade in ratingsByDecade) {
+            favoriteDecades[decade] = (
+              ratingsByDecade[decade].reduce((val, acc) => acc + val) /
+              ratingsByDecade[decade].length
+            ).toFixed(2);
+          }
 
-        let totalHoursWatched =
-          hoursWatched.reduce((acc, value) => acc + value) / 60;
+          let totalHoursWatched =
+            hoursWatched.reduce((acc, value) => acc + value) / 60;
 
-        const sortedFavoriteGenres = Object.entries(favoriteGenres)
-          .sort((a, b) => a[0].localeCompare(b[0]))
-          .sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
+          const sortedFavoriteGenres = Object.entries(favoriteGenres)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
 
-        const sortedFavoriteDecades = Object.entries(favoriteDecades)
-          .sort((a, b) => a[0].localeCompare(b[0]))
-          .sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
+          const sortedFavoriteDecades = Object.entries(favoriteDecades)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
 
-        res.send({
-          hoursWatched: Math.round(totalHoursWatched),
-          favoriteGenres: sortedFavoriteGenres.slice(0, 5),
-          favoriteDecades: sortedFavoriteDecades.slice(0, 5),
+          res.send({
+            hoursWatched: Math.round(totalHoursWatched),
+            favoriteGenres: sortedFavoriteGenres.slice(0, 5),
+            favoriteDecades: sortedFavoriteDecades.slice(0, 5),
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      });
+    }
+  });
+});
+
+app.get('/movieratings/:userID', (req, res) => {
+  const userID = req.params.userID;
+  let userMovieRatings = Array<MovieRating>();
+
+  User.findById(userID).then((response) => {
+    if (response) {
+      userMovieRatings = response.get('movieRatings');
+
+      Promise.all(
+        userMovieRatings.map((movieRating) => {
+          const movieID = movieRating.movieID;
+
+          return Movie.findById(movieID)
+            .then((response) => {
+              if (response) {
+                return {
+                  id: movieID,
+                  title: response.get('title'),
+                  poster: response.get('poster'),
+                  genres: response.get('genres'),
+                  rating: movieRating.rating,
+                } as MovieRatingInfo;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+      )
+        .then((response) => {
+          res.send(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   });
 });

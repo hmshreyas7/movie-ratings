@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../rootState';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 function UserPage() {
   const user = useSelector((state: RootState) => state.user);
@@ -15,6 +16,7 @@ function UserPage() {
     favoriteGenres: [],
     favoriteDecades: [],
   });
+  let history = useHistory();
 
   useEffect(() => {
     axios
@@ -30,6 +32,10 @@ function UserPage() {
         console.log(err);
       });
   }, [user.uid]);
+
+  const goToRatingPage = () => {
+    history.push('/ratings');
+  };
 
   return (
     <div className='user-page-wrapper'>
@@ -52,6 +58,9 @@ function UserPage() {
           Favorite decades:{' '}
           {watchStats.favoriteDecades.map((decade) => decade[0]).join(', ')}
         </p>
+      </div>
+      <div className='rating-history-button' onClick={goToRatingPage}>
+        Rating History
       </div>
     </div>
   );

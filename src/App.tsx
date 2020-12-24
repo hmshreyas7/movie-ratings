@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import MovieGrid from './components/MovieGrid';
 import MoviePage from './components/MoviePage';
+import RatingPage from './components/RatingPage';
 import SideNav from './components/SideNav';
 import SignUpPage from './components/SignUpPage';
 import UserPage from './components/UserPage';
@@ -26,6 +27,9 @@ function App() {
         </Route>
         <Route path='/user'>
           <UserPage />
+        </Route>
+        <Route path='/ratings'>
+          <RatingPage />
         </Route>
         <Route path='/'>
           <MovieGrid />
