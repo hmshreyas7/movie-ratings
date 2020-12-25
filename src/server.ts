@@ -270,17 +270,95 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
             2: 0,
             1: 0,
           };
+        let ratingsByGenre: Record<string, Array<number>> = {};
+        let favoriteGenres: Record<string, string> = {};
+        let ratingsByRuntime: Record<string, Array<number>> = {
+          '< 60 min': [],
+          '60-89 min': [],
+          '90-119 min': [],
+          '120-149 min': [],
+          '150-179 min': [],
+          '180+ min': [],
+        };
+        let avgRatingsByRuntime: Record<string, string> = {};
 
         userMovieRatings.forEach((movieRating) => {
           avgRating += movieRating.rating;
           ratingDistribution[movieRating.rating] += 1;
         });
 
-        res.send({
-          totalRatings: userMovieRatings.length,
-          avgRating: (avgRating / userMovieRatings.length).toFixed(2),
-          ratingDistribution: ratingDistribution,
-        });
+        Promise.all(
+          userMovieRatings.map((movieRating) => {
+            const movieID = movieRating.movieID;
+            const rating = movieRating.rating;
+
+            return Movie.findById(movieID).then((response) => {
+              if (response) {
+                const runtime = parseInt(response.get('runtime').slice(0, -4));
+                let runtimeInterval = '';
+                if (runtime < 60) {
+                  runtimeInterval = '< 60 min';
+                } else if (runtime < 90) {
+                  runtimeInterval = '60-89 min';
+                } else if (runtime < 120) {
+                  runtimeInterval = '90-119 min';
+                } else if (runtime < 150) {
+                  runtimeInterval = '120-149 min';
+                } else if (runtime < 180) {
+                  runtimeInterval = '150-179 min';
+                } else {
+                  runtimeInterval = '180+ min';
+                }
+                ratingsByRuntime[runtimeInterval].push(rating);
+
+                response
+                  .get('genres')
+                  .split(', ')
+                  .forEach((genre: string) => {
+                    if (ratingsByGenre.hasOwnProperty(genre)) {
+                      ratingsByGenre[genre].push(rating);
+                    } else {
+                      ratingsByGenre[genre] = [rating];
+                    }
+                  });
+              }
+            });
+          })
+        )
+          .then((response) => {
+            for (const runtime in ratingsByRuntime) {
+              avgRatingsByRuntime[runtime] =
+                ratingsByRuntime[runtime].length > 0
+                  ? (
+                      ratingsByRuntime[runtime].reduce(
+                        (val, acc) => acc + val
+                      ) / ratingsByRuntime[runtime].length
+                    ).toFixed(2)
+                  : '0.00';
+            }
+
+            for (const genre in ratingsByGenre) {
+              favoriteGenres[genre] = (
+                ratingsByGenre[genre].reduce((val, acc) => acc + val) /
+                ratingsByGenre[genre].length
+              ).toFixed(2);
+            }
+
+            const sortedFavoriteGenres = Object.entries(favoriteGenres)
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
+
+            res.send({
+              totalRatings: userMovieRatings.length,
+              avgRating: (avgRating / userMovieRatings.length).toFixed(2),
+              ratingDistribution: ratingDistribution,
+              avgRatingsByRuntime: Object.entries(avgRatingsByRuntime),
+              favoriteGenres: sortedFavoriteGenres,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     })
     .catch((err) => {

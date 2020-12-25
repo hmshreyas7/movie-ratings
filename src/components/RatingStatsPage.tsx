@@ -9,6 +9,8 @@ function RatingStatsPage() {
     totalRatings: 0,
     avgRating: '',
     ratingDistribution: {},
+    avgRatingsByRuntime: [],
+    favoriteGenres: [],
   });
 
   useEffect(() => {
@@ -56,6 +58,20 @@ function RatingStatsPage() {
       <p>Average rating: {stats.avgRating}</p>
       <p>Rating Distribution:</p>
       <div className='rating-distribution'>{getRatingDistribution()}</div>
+      <div>
+        {stats.avgRatingsByRuntime.map((runtime) => (
+          <p>
+            {runtime[0]}: {runtime[1]}
+          </p>
+        ))}
+      </div>
+      <div>
+        {stats.favoriteGenres.map((genre) => (
+          <p>
+            {genre[0]}: {genre[1]}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
