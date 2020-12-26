@@ -281,6 +281,8 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
           '180+ min': [],
         };
         let avgRatingsByRuntime: Record<string, string> = {};
+        let ratingsByDecade: Record<string, Array<number>> = {};
+        let avgRatingsByDecade: Record<string, string> = {};
 
         userMovieRatings.forEach((movieRating) => {
           avgRating += movieRating.rating;
@@ -321,6 +323,15 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
                       ratingsByGenre[genre] = [rating];
                     }
                   });
+
+                const releaseDecade = `${response
+                  .get('releaseDate')
+                  .slice(-4, -1)}0s`;
+                if (ratingsByDecade.hasOwnProperty(releaseDecade)) {
+                  ratingsByDecade[releaseDecade].push(rating);
+                } else {
+                  ratingsByDecade[releaseDecade] = [rating];
+                }
               }
             });
           })
@@ -344,9 +355,20 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
               ).toFixed(2);
             }
 
+            for (const decade in ratingsByDecade) {
+              avgRatingsByDecade[decade] = (
+                ratingsByDecade[decade].reduce((val, acc) => acc + val) /
+                ratingsByDecade[decade].length
+              ).toFixed(2);
+            }
+
             const sortedFavoriteGenres = Object.entries(favoriteGenres)
               .sort((a, b) => a[0].localeCompare(b[0]))
               .sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
+
+            const sortedAvgRatingsByDecade = Object.entries(
+              avgRatingsByDecade
+            ).sort((a, b) => a[0].localeCompare(b[0]));
 
             res.send({
               totalRatings: userMovieRatings.length,
@@ -354,6 +376,7 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
               ratingDistribution: ratingDistribution,
               avgRatingsByRuntime: Object.entries(avgRatingsByRuntime),
               favoriteGenres: sortedFavoriteGenres,
+              avgRatingsByDecade: sortedAvgRatingsByDecade,
             });
           })
           .catch((err) => {

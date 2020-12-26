@@ -11,6 +11,7 @@ function RatingStatsPage() {
     ratingDistribution: {},
     avgRatingsByRuntime: [],
     favoriteGenres: [],
+    avgRatingsByDecade: [],
   });
 
   useEffect(() => {
@@ -69,6 +70,13 @@ function RatingStatsPage() {
         {stats.favoriteGenres.map((genre) => (
           <p>
             {genre[0]}: {genre[1]}
+          </p>
+        ))}
+      </div>
+      <div>
+        {stats.avgRatingsByDecade.map((decade) => (
+          <p>
+            {decade[0]}: {decade[1]}
           </p>
         ))}
       </div>
