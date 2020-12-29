@@ -53,33 +53,46 @@ function RatingStatsPage() {
       });
   };
 
+  const buildRatingStatsTable = (
+    ratingGroupTitle: string,
+    ratingGroupArray: [string, string][]
+  ) => {
+    return (
+      <>
+        <h2>Ratings by {ratingGroupTitle}</h2>
+        <div className='rating-stats-table'>
+          <div className='rating-stats-column'>
+            {ratingGroupArray.map((ratingGroup) => (
+              <div
+                style={
+                  ratingGroupTitle === 'Genre' ? { textAlign: 'left' } : {}
+                }
+              >
+                {ratingGroup[0]}
+              </div>
+            ))}
+          </div>
+          <div className='rating-stats-column'>
+            {ratingGroupArray.map((ratingGroup) => (
+              <div>{ratingGroup[1]}</div>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className='rating-stats-page-wrapper'>
       <p>Total ratings: {stats.totalRatings}</p>
       <p>Average rating: {stats.avgRating}</p>
-      <p>Rating Distribution:</p>
-      <div className='rating-distribution'>{getRatingDistribution()}</div>
-      <div>
-        {stats.avgRatingsByRuntime.map((runtime) => (
-          <p>
-            {runtime[0]}: {runtime[1]}
-          </p>
-        ))}
+      <div className='rating-distribution'>
+        <h2>Rating Distribution</h2>
+        {getRatingDistribution()}
       </div>
-      <div>
-        {stats.favoriteGenres.map((genre) => (
-          <p>
-            {genre[0]}: {genre[1]}
-          </p>
-        ))}
-      </div>
-      <div>
-        {stats.avgRatingsByDecade.map((decade) => (
-          <p>
-            {decade[0]}: {decade[1]}
-          </p>
-        ))}
-      </div>
+      {buildRatingStatsTable('Runtime', stats.avgRatingsByRuntime)}
+      {buildRatingStatsTable('Genre', stats.favoriteGenres)}
+      {buildRatingStatsTable('Decade', stats.avgRatingsByDecade)}
     </div>
   );
 }

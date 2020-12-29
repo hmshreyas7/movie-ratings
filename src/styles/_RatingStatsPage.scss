@@ -1,6 +1,9 @@
 .rating-stats-page-wrapper {
   bottom: 0;
   color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   left: 240px;
   margin: 16px;
   position: absolute;
@@ -35,4 +38,14 @@
 .rating-bar {
   background-color: #4d6d6b;
   height: 32px;
+}
+
+.rating-stats-table {
+  display: flex;
+  text-align: right;
+  width: 300px;
+}
+
+.rating-stats-column:last-child {
+  flex: 1;
 }
