@@ -82,22 +82,25 @@ function MovieGrid(props: MovieGridProps) {
       .then((res) => {
         let movies: Array<TMDbMovie> = res.data.results;
 
-        movies.forEach((movie: TMDbMovie) => {
-          const externalIDs =
-            tmdbAPI + `/${movie.id}/external_ids?api_key=${tmdbKey}`;
-          axios
-            .get(externalIDs)
-            .then((res) => {
-              let imdbID = res.data.imdb_id;
-              const movieDetails = omdbAPI + `/?i=${imdbID}&apikey=${omdbKey}`;
-              return axios.get(movieDetails);
-            })
-            .then((res) => {
-              setMovies((prevMovies) => [...prevMovies, res.data]);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+        Promise.all(
+          movies.map((movie: TMDbMovie) => {
+            const externalIDs =
+              tmdbAPI + `/${movie.id}/external_ids?api_key=${tmdbKey}`;
+            return axios
+              .get(externalIDs)
+              .then((res) => {
+                let imdbID = res.data.imdb_id;
+                const movieDetails =
+                  omdbAPI + `/?i=${imdbID}&apikey=${omdbKey}`;
+                return axios.get(movieDetails);
+              })
+              .then((res) => res.data)
+              .catch(() => {
+                return {};
+              });
+          })
+        ).then((res) => {
+          setMovies(res);
         });
       })
       .catch((err) => {
@@ -112,11 +115,10 @@ function MovieGrid(props: MovieGridProps) {
         <h1>Showing results for "{searchQuery}"</h1>
       )}
       <div className='movie-grid'>
-        {[...movies]
-          .sort((a, b) => ('' + a.Title).localeCompare(b.Title))
-          .map((movie: OMDbMovie) => (
-            <MovieCard key={movie.imdbID} movieInfo={movie} />
-          ))}
+        {[...movies].map(
+          (movie: OMDbMovie) =>
+            movie.imdbID && <MovieCard key={movie.imdbID} movieInfo={movie} />
+        )}
       </div>
     </div>
   );
