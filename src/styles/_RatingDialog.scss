@@ -1,10 +1,10 @@
 .rating-dialog .MuiPaper-root {
   align-items: center;
-  gap: 16px;
-  padding: 16px;
+  gap: $spacing-normal;
+  padding: $spacing-normal;
 }
 
 .rating-button {
-  background-color: #153f3c !important;
-  color: white !important;
+  background-color: $primary-color !important;
+  color: $on-primary-color !important;
 }

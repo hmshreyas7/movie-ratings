@@ -1,11 +1,11 @@
 .movie-page-wrapper {
   bottom: 0;
-  color: white;
+  color: $on-primary-color;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: $spacing-large;
   left: 240px;
-  padding: 32px;
+  padding: $spacing-large;
   position: absolute;
   right: 0;
   top: 0;
@@ -18,15 +18,15 @@
 }
 
 .movie-page-info {
-  background-color: #193231;
+  background-color: $info-background-color;
   border-radius: 20px;
   display: flex;
-  gap: 32px;
+  gap: $spacing-large;
 }
 
 .movie-page-info-poster {
   border-radius: 20px;
-  box-shadow: 0px 0px 8px 2px #00000080;
+  box-shadow: 0px 0px 8px 2px $card-shadow-color;
   display: flex;
   flex-shrink: 0;
   overflow: hidden;
@@ -35,8 +35,8 @@
 .movie-page-info-extra {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding: 32px 32px 0 0;
+  gap: $spacing-large;
+  padding: $spacing-large $spacing-large 0 0;
 }
 
 .movie-page-info-extra p:last-child {
@@ -52,22 +52,22 @@
 .movie-page-info-extra p {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: $spacing-small;
 }
 
 .movie-page-icon {
   align-items: center;
-  background-color: #304746;
+  background-color: $icon-background-color;
   border-radius: 8px;
   display: flex;
-  padding: 8px;
+  padding: $spacing-small;
 }
 
 .movie-page-icon-action {
   align-items: center;
-  background-color: #4d6d6b;
+  background-color: $secondary-color;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
-  padding: 8px;
+  padding: $spacing-small;
 }

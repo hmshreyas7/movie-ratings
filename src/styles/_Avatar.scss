@@ -2,12 +2,12 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: $spacing-small;
   justify-content: center;
-  padding: 16px;
+  padding: $spacing-normal;
 }
 
 .avatar-wrapper img {
   border-radius: 50%;
-  height: 48px;
+  height: $avatar-size-normal;
 }

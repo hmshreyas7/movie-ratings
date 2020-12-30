@@ -12,11 +12,11 @@
 .signup-module-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
+  gap: $spacing-normal;
+  padding: $spacing-normal;
 }
 
 .signup-module-wrapper input {
   outline: none;
-  padding: 8px;
+  padding: $spacing-small;
 }

@@ -4,9 +4,9 @@
   border-radius: 2px;
   cursor: pointer;
   display: flex;
-  gap: 8px;
+  gap: $spacing-small;
   justify-content: center;
-  padding: 8px;
+  padding: $spacing-small;
 }
 
 @mixin social-signin-button-logo {

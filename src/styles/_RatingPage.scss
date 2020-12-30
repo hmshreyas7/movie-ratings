@@ -1,6 +1,6 @@
 .rating-page-wrapper {
   bottom: 0;
-  color: white;
+  color: $on-primary-color;
   left: 240px;
   position: absolute;
   right: 0;
@@ -13,10 +13,10 @@
 
 .filter-sort {
   align-items: center;
-  color: black;
+  color: $dropdown-text-color;
   display: flex;
-  gap: 16px;
-  margin: 16px;
+  gap: $spacing-normal;
+  margin: $spacing-normal;
 }
 
 .filter-sort > div {
@@ -25,15 +25,15 @@
 
 .rating-page-info-wrapper {
   position: relative;
-  padding: 16px;
+  padding: $spacing-normal;
 }
 
 .stats-button {
-  background-color: #4d6d6b;
+  background-color: $secondary-color;
   border-radius: 8px;
   cursor: pointer;
-  margin: 0 16px;
-  padding: 16px;
+  margin: 0 $spacing-normal;
+  padding: $spacing-normal;
   position: absolute;
   right: 0;
   top: 50%;

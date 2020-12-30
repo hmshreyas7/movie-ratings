@@ -12,31 +12,31 @@
 .login-options-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding: 32px;
+  gap: $spacing-large;
+  padding: $spacing-large;
 }
 
 .social-login-wrapper {
   align-items: center;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid $on-primary-color;
   display: flex;
-  gap: 16px;
+  gap: $spacing-normal;
   justify-content: center;
-  padding: 16px;
-  padding-bottom: 48px;
+  padding: $spacing-normal;
+  padding-bottom: $spacing-normal + $spacing-large;
   position: relative;
 }
 
 .social-login-wrapper::after {
-  background-color: #153f3c;
-  bottom: -8px;
-  color: white;
+  background-color: $primary-color;
+  bottom: -$spacing-small;
+  color: $on-primary-color;
   content: 'or';
   left: 50%;
-  margin-left: -32px;
+  margin-left: -$spacing-large;
   position: absolute;
   text-align: center;
-  width: 48px;
+  width: $spacing-normal + $spacing-large;
 }
 
 .google-signin-button {
@@ -63,19 +63,19 @@
 .standard-login-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
+  gap: $spacing-normal;
+  padding: $spacing-normal;
 }
 
 .standard-login-wrapper input {
   outline: none;
-  padding: 8px;
+  padding: $spacing-small;
 }
 
 .standard-login-buttons-wrapper {
   align-items: center;
   display: flex;
-  gap: 16px;
+  gap: $spacing-normal;
   justify-content: center;
 }
 

@@ -1,6 +1,6 @@
 .user-page-wrapper {
   bottom: 0;
-  color: white;
+  color: $on-primary-color;
   left: 240px;
   position: absolute;
   right: 0;
@@ -12,8 +12,8 @@
 }
 
 .user-page-avatar img {
-  height: 144px;
-  width: 144px;
+  height: $avatar-size-large;
+  width: $avatar-size-large;
 }
 
 .user-page-avatar p {
@@ -30,16 +30,16 @@
   display: flex;
   flex-direction: column;
   font-size: larger;
-  gap: 16px;
-  padding: 16px;
+  gap: $spacing-normal;
+  padding: $spacing-normal;
 }
 
 .rating-history-button {
-  background-color: #4d6d6b;
+  background-color: $secondary-color;
   border-radius: 8px;
   cursor: pointer;
-  margin: 16px;
-  padding: 16px;
+  margin: $spacing-normal;
+  padding: $spacing-normal;
   position: absolute;
   right: 0;
   top: 0;

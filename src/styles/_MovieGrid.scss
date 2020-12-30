@@ -1,6 +1,6 @@
 .movie-grid-wrapper {
   bottom: 0;
-  color: white;
+  color: $on-primary-color;
   left: 240px;
   position: absolute;
   right: 0;
@@ -14,7 +14,7 @@
 .movie-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: $spacing-normal;
   justify-content: center;
-  padding: 16px;
+  padding: $spacing-normal;
 }

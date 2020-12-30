@@ -1,8 +1,8 @@
 .side-nav-drawer {
-  background-color: white;
+  background-color: $on-primary-color;
   bottom: 0;
   left: 0;
-  padding: 16px;
+  padding: $spacing-normal;
   position: fixed;
   top: 0;
   width: 240px;
