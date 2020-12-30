@@ -84,11 +84,9 @@ function RatingPage() {
   return (
     <div className='rating-page-wrapper'>
       <div className='rating-page-info-wrapper'>
-        {movies.length > 0 && (
-          <h1>
-            {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}
-          </h1>
-        )}
+        <h1>
+          {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}
+        </h1>
         <div className='stats-button' onClick={goToRatingStatsPage}>
           Stats
         </div>
