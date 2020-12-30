@@ -5,21 +5,41 @@ import {
   MovieFilter,
   Schedule,
 } from '@material-ui/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-
-interface RootState {
-  movieInfo: OMDbMovie;
-}
+import { useHistory } from 'react-router-dom';
+import { RootState } from '../rootState';
+import RatingDialog from './RatingDialog';
 
 function MoviePage() {
   const movieInfo = useSelector((state: RootState) => state.movieInfo);
+  const user = useSelector((state: RootState) => state.user);
+
+  let history = useHistory();
+  let [isDialogOpen, setDialogOpen] = useState(false);
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleAdd = () => {
+    if (user.uid) {
+      setDialogOpen(true);
+    } else {
+      history.push('/login');
+    }
+  };
 
   return (
     <div className='movie-page-wrapper'>
       <div className='movie-page-header'>
         <h1>{movieInfo.Title}</h1>
-        <div className='movie-page-icon-action'>
+        <RatingDialog
+          isOpen={isDialogOpen}
+          onClose={handleDialogClose}
+          movieInfo={movieInfo}
+        />
+        <div className='movie-page-icon-action' onClick={handleAdd}>
           <Add />
         </div>
       </div>
