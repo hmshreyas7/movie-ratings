@@ -289,6 +289,11 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
           ratingDistribution[movieRating.rating] += 1;
         });
 
+        const formattedAvgRating =
+          userMovieRatings.length > 0
+            ? (avgRating / userMovieRatings.length).toFixed(2)
+            : '0.00';
+
         Promise.all(
           userMovieRatings.map((movieRating) => {
             const movieID = movieRating.movieID;
@@ -372,7 +377,7 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
 
             res.send({
               totalRatings: userMovieRatings.length,
-              avgRating: (avgRating / userMovieRatings.length).toFixed(2),
+              avgRating: formattedAvgRating,
               ratingDistribution: ratingDistribution,
               avgRatingsByRuntime: Object.entries(avgRatingsByRuntime),
               favoriteGenres: sortedFavoriteGenres,
