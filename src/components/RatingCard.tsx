@@ -1,3 +1,4 @@
+import { Grade } from '@material-ui/icons';
 import React from 'react';
 
 interface RatingCardProps {
@@ -12,7 +13,10 @@ function RatingCard(props: RatingCardProps) {
       </div>
       <div className='movie-card-info'>
         <p>{props.movieInfo.title}</p>
-        <p>{props.movieInfo.rating}</p>
+        <div className='movie-card-rating'>
+          <Grade fontSize='small' />
+          <p>{props.movieInfo.rating}</p>
+        </div>
       </div>
     </div>
   );

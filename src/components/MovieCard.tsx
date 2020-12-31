@@ -1,3 +1,4 @@
+import { Grade } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -48,7 +49,10 @@ function MovieCard(props: MovieCardProps) {
       </div>
       <div className='movie-card-info'>
         <p>{props.movieInfo.Title}</p>
-        <p>{props.movieInfo.imdbRating}</p>
+        <div className='movie-card-rating'>
+          <Grade fontSize='small' />
+          <p>{props.movieInfo.imdbRating}</p>
+        </div>
       </div>
     </div>
   );
