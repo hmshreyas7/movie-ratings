@@ -17,6 +17,7 @@
   display: flex;
   gap: $spacing-normal;
   margin: $spacing-normal;
+  padding: 0 25px;
 }
 
 .filter-sort > div {
@@ -35,7 +36,7 @@
   margin: 0 $spacing-normal;
   padding: $spacing-normal;
   position: absolute;
-  right: 0;
+  right: 25px;
   top: 50%;
   transform: translate(0, -50%);
 }

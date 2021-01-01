@@ -12,9 +12,15 @@
 }
 
 .movie-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: $spacing-normal;
+  grid-template-columns: repeat(auto-fill, 250px);
   justify-content: center;
   padding: $spacing-normal;
+}
+
+@media only screen and (min-width: 788px) {
+  .movie-grid {
+    justify-content: space-between;
+  }
 }
