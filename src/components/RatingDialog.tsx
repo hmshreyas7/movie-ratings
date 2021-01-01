@@ -71,16 +71,17 @@ function RatingDialog(props: RatingDialogProps) {
   return (
     <Dialog className='rating-dialog' onClose={handleClose} open={isOpen}>
       <DialogTitle id='simple-dialog-title'>
-        {ratingHover === -1 && rating === 0
-          ? `Select rating for "${movieInfo.Title}"`
-          : hoverLabels[ratingHover === -1 ? rating : ratingHover]}
+        {`Select rating for "${movieInfo.Title}"`}
       </DialogTitle>
-      <Rating
-        value={rating}
-        max={10}
-        onChangeActive={handleRatingHoverChange}
-        onChange={handleRatingChange}
-      />
+      <div className='rating-hover'>
+        <p>{hoverLabels[ratingHover === -1 ? rating : ratingHover]}</p>
+        <Rating
+          value={rating}
+          max={10}
+          onChangeActive={handleRatingHoverChange}
+          onChange={handleRatingChange}
+        />
+      </div>
       <Button className='rating-button' onClick={handleRate}>
         Rate
       </Button>

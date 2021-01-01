@@ -4,6 +4,19 @@
   padding: $spacing-normal;
 }
 
+.rating-hover {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.rating-hover p {
+  bottom: $spacing-normal;
+  position: absolute;
+  transform: translate(0, -50%);
+}
+
 .rating-button {
   background-color: $primary-color !important;
   color: $on-primary-color !important;
