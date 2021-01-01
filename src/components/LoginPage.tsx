@@ -2,9 +2,11 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { login } from '../actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { loading, login } from '../actions';
 import axios from 'axios';
+import { RootState } from '../rootState';
+import { CircularProgress } from '@material-ui/core';
 
 function googleSignIn() {
   let provider = new firebase.auth.GoogleAuthProvider();
@@ -23,6 +25,7 @@ function LoginPage() {
     email: '',
     password: '',
   });
+  let isLoading = useSelector((state: RootState) => state.isLoading);
 
   useEffect(() => {
     let unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -43,11 +46,14 @@ function LoginPage() {
           .catch((err) => {
             console.log(err);
           });
+      } else {
+        dispatch(loading(false));
       }
     });
 
     return () => {
       unsubscribe();
+      dispatch(loading(true));
     };
   }, [dispatch, history]);
 
@@ -79,6 +85,11 @@ function LoginPage() {
 
   return (
     <div className='login-page-wrapper'>
+      {isLoading && (
+        <div className='loading-indicator'>
+          <CircularProgress color='inherit' />
+        </div>
+      )}
       <div className='login-options-wrapper'>
         <div className='social-login-wrapper'>
           <button className='google-signin-button' onClick={googleSignIn}>

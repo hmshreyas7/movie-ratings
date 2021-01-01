@@ -1,12 +1,14 @@
 import userReducer from './user';
 import searchQueryReducer from './searchQuery';
 import movieInfoReducer from './movieInfo';
-import {combineReducers} from 'redux';
+import isLoadingReducer from './isLoading';
+import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
-    user: userReducer,
-    searchQuery: searchQueryReducer,
-    movieInfo: movieInfoReducer
-})
+  user: userReducer,
+  searchQuery: searchQueryReducer,
+  movieInfo: movieInfoReducer,
+  isLoading: isLoadingReducer,
+});
 
 export default rootReducer;

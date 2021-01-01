@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { genres, sorts } from '../filterSortOptions';
 import { RootState } from '../rootState';
 import RatingCard from './RatingCard';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom';
+import { CircularProgress } from '@material-ui/core';
+import { loading } from '../actions';
 
 type SelectedOption = {
   value: string;
@@ -14,6 +16,7 @@ type SelectedOption = {
 
 function RatingPage() {
   const user = useSelector((state: RootState) => state.user);
+  let isLoading = useSelector((state: RootState) => state.isLoading);
   let [movies, setMovies] = useState<Array<MovieRatingInfo>>([]);
   let [filterSort, setFilterSort] = useState({
     genreFilter: [] as SelectedOption[],
@@ -21,6 +24,7 @@ function RatingPage() {
   });
   let [ratingCount, setRatingCount] = useState(0);
   let history = useHistory();
+  let dispatch = useDispatch();
 
   const handleChange = (selected: any, e: any) => {
     const name = e.name;
@@ -71,11 +75,16 @@ function RatingPage() {
       .get(`http://localhost:5000/movieratings/${user.uid}`)
       .then((res) => {
         setMovies(res.data.reverse());
+        dispatch(loading(false));
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [user.uid]);
+
+    return () => {
+      dispatch(loading(true));
+    };
+  }, [user.uid, dispatch]);
 
   const goToRatingStatsPage = () => {
     history.push('/rating-stats');
@@ -83,6 +92,11 @@ function RatingPage() {
 
   return (
     <div className='rating-page-wrapper'>
+      {isLoading && (
+        <div className='loading-indicator'>
+          <CircularProgress color='inherit' />
+        </div>
+      )}
       <div className='rating-page-info-wrapper'>
         <h1>
           {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}

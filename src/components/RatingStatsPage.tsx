@@ -1,10 +1,13 @@
+import { CircularProgress } from '@material-ui/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { loading } from '../actions';
 import { RootState } from '../rootState';
 
 function RatingStatsPage() {
   const user = useSelector((state: RootState) => state.user);
+  let isLoading = useSelector((state: RootState) => state.isLoading);
   let [stats, setStats] = useState({
     totalRatings: 0,
     avgRating: '',
@@ -13,17 +16,23 @@ function RatingStatsPage() {
     favoriteGenres: [],
     avgRatingsByDecade: [],
   });
+  let dispatch = useDispatch();
 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/movie-rating-stats/${user.uid}`)
       .then((res) => {
         setStats(res.data);
+        dispatch(loading(false));
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [user.uid]);
+
+    return () => {
+      dispatch(loading(true));
+    };
+  }, [user.uid, dispatch]);
 
   const getRatingDistribution = () => {
     const ratingDistributionArray = Object.entries(
@@ -84,6 +93,11 @@ function RatingStatsPage() {
 
   return (
     <div className='rating-stats-page-wrapper'>
+      {isLoading && (
+        <div className='loading-indicator'>
+          <CircularProgress color='inherit' />
+        </div>
+      )}
       <p>Total ratings: {stats.totalRatings}</p>
       <p>Average rating: {stats.avgRating}</p>
       <div className='rating-distribution'>

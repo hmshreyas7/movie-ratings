@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import MovieCard from './MovieCard';
+import { RootState } from '../rootState';
+import { CircularProgress } from '@material-ui/core';
+import { loading } from '../actions';
 
 interface MovieGridProps {
   isSearch: boolean;
 }
 
-interface RootState {
-  searchQuery: string;
-}
-
 function MovieGrid(props: MovieGridProps) {
   let searchQuery = useSelector((state: RootState) => state.searchQuery);
+  let isLoading = useSelector((state: RootState) => state.isLoading);
+  let dispatch = useDispatch();
 
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
   const tmdbSearchAPI = 'https://api.themoviedb.org/3/search';
@@ -101,15 +102,25 @@ function MovieGrid(props: MovieGridProps) {
           })
         ).then((res) => {
           setMovies(res);
+          dispatch(loading(false));
         });
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [tmdbKey, omdbKey, tmdbMovies]);
+
+    return () => {
+      dispatch(loading(true));
+    };
+  }, [tmdbKey, omdbKey, tmdbMovies, dispatch]);
 
   return (
     <div className='movie-grid-wrapper'>
+      {isLoading && (
+        <div className='loading-indicator'>
+          <CircularProgress color='inherit' />
+        </div>
+      )}
       {!props.isSearch && <h1>Now Playing</h1>}
       {props.isSearch && searchQuery.length > 0 && (
         <h1>Showing results for "{searchQuery}"</h1>

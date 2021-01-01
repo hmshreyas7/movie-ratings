@@ -1,12 +1,15 @@
 import Avatar from './Avatar';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../rootState';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { CircularProgress } from '@material-ui/core';
+import { loading } from '../actions';
 
 function UserPage() {
   const user = useSelector((state: RootState) => state.user);
+  let isLoading = useSelector((state: RootState) => state.isLoading);
   const creationTime = user.metadata ? user.metadata.creationTime : null;
   const joinDateTime = creationTime
     ? new Date(creationTime).toLocaleDateString()
@@ -17,6 +20,7 @@ function UserPage() {
     favoriteDecades: [],
   });
   let history = useHistory();
+  let dispatch = useDispatch();
 
   useEffect(() => {
     axios
@@ -27,11 +31,16 @@ function UserPage() {
           favoriteGenres: res.data.favoriteGenres,
           favoriteDecades: res.data.favoriteDecades,
         });
+        dispatch(loading(false));
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [user.uid]);
+
+    return () => {
+      dispatch(loading(true));
+    };
+  }, [user.uid, dispatch]);
 
   const goToRatingPage = () => {
     history.push('/ratings');
@@ -39,6 +48,11 @@ function UserPage() {
 
   return (
     <div className='user-page-wrapper'>
+      {isLoading && (
+        <div className='loading-indicator'>
+          <CircularProgress color='inherit' />
+        </div>
+      )}
       <div className='user-page-profile'>
         <div className='user-page-avatar'>
           <Avatar />

@@ -8,3 +8,15 @@
 body {
   background-color: $primary-color;
 }
+
+.loading-indicator {
+  align-items: center;
+  background-color: $card-shadow-color;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 240px;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
