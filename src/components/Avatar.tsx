@@ -1,9 +1,10 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '../assets/default-user-avatar.png';
 import firebase from 'firebase/app';
 import dotenv from 'dotenv';
 import { useHistory } from 'react-router-dom';
+import { login } from '../actions';
 
 interface RootState {
   user: firebase.User;
@@ -22,6 +23,19 @@ function setAvatarImage(photoURL: string) {
 function Avatar() {
   const user = useSelector((state: RootState) => state.user);
   let history = useHistory();
+  let dispatch = useDispatch();
+
+  useEffect(() => {
+    let unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        dispatch(login(user));
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch]);
 
   const handleClick = () => {
     if (user.displayName) {
