@@ -46,6 +46,8 @@
 
 .movie-page-stats {
   display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-normal;
   justify-content: space-between;
 }
 
@@ -70,4 +72,21 @@
   cursor: pointer;
   display: flex;
   padding: $spacing-small;
+}
+
+@media only screen and (max-width: 600px) {
+  .movie-page-wrapper {
+    position: unset;
+  }
+}
+
+@media only screen and (max-width: 1060px) {
+  .movie-page-info {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .movie-page-info-extra {
+    padding: 0 $spacing-large $spacing-large;
+  }
 }

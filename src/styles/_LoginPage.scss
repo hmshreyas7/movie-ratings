@@ -83,3 +83,9 @@
 .standard-login-buttons-wrapper input {
   flex: 1;
 }
+
+@media only screen and (max-width: 600px) {
+  .login-page-wrapper {
+    position: unset;
+  }
+}

@@ -14,13 +14,20 @@
 .movie-grid {
   display: grid;
   gap: $spacing-normal;
-  grid-template-columns: repeat(auto-fill, 250px);
+  grid-template-columns: auto;
   justify-content: center;
   padding: $spacing-normal;
 }
 
-@media only screen and (min-width: 788px) {
+@media only screen and (max-width: 600px) {
+  .movie-grid-wrapper {
+    position: unset;
+  }
+}
+
+@media only screen and (min-width: 1060px) {
   .movie-grid {
+    grid-template-columns: repeat(auto-fill, 250px);
     justify-content: space-between;
   }
 }

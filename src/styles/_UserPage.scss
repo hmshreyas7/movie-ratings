@@ -44,3 +44,27 @@
   right: 0;
   top: 0;
 }
+
+@media only screen and (max-width: 600px) {
+  .user-page-wrapper {
+    position: unset;
+  }
+}
+
+@media only screen and (max-width: 1060px) {
+  .user-page-profile {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .user-page-info {
+    text-align: center;
+  }
+
+  .rating-history-button {
+    margin: 0 auto;
+    position: unset;
+    transform: translate(0, $spacing-normal);
+    width: fit-content;
+  }
+}

@@ -20,3 +20,9 @@
   outline: none;
   padding: $spacing-small;
 }
+
+@media only screen and (max-width: 600px) {
+  .signup-page-wrapper {
+    position: unset;
+  }
+}
