@@ -4,6 +4,7 @@ import { Button, Dialog, DialogTitle } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import { useSelector } from 'react-redux';
 import { RootState } from '../rootState';
+import { ErrorOutline } from '@material-ui/icons';
 
 interface RatingDialogProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ function RatingDialog(props: RatingDialogProps) {
   const { isOpen, onClose, movieInfo } = props;
   let [rating, setRating] = useState(0);
   let [ratingHover, setRatingHover] = useState(-1);
+  let [isRatingError, setRatingError] = useState(false);
   const user = useSelector((state: RootState) => state.user);
 
   const hoverLabels: Record<number, string> = {
@@ -33,6 +35,7 @@ function RatingDialog(props: RatingDialogProps) {
   const handleClose = () => {
     onClose();
     setRating(0);
+    setRatingError(false);
   };
 
   const handleRatingHoverChange = (
@@ -41,6 +44,7 @@ function RatingDialog(props: RatingDialogProps) {
   ) => {
     if (value) {
       setRatingHover(value);
+      setRatingError(false);
     }
   };
 
@@ -51,21 +55,25 @@ function RatingDialog(props: RatingDialogProps) {
   };
 
   const handleRate = () => {
-    axios
-      .post('http://localhost:5000/rate', {
-        userID: user.uid,
-        movie: movieInfo,
-        rating: rating,
-      })
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (rating === 0) {
+      setRatingError(true);
+    } else {
+      axios
+        .post('http://localhost:5000/rate', {
+          userID: user.uid,
+          movie: movieInfo,
+          rating: rating,
+        })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
-    onClose();
-    setRating(0);
+      onClose();
+      setRating(0);
+    }
   };
 
   return (
@@ -75,6 +83,12 @@ function RatingDialog(props: RatingDialogProps) {
       </DialogTitle>
       <div className='rating-hover'>
         <p>{hoverLabels[ratingHover === -1 ? rating : ratingHover]}</p>
+        {isRatingError && (
+          <div className='rating-error'>
+            <ErrorOutline />
+            No rating selected
+          </div>
+        )}
         <Rating
           value={rating}
           max={10}

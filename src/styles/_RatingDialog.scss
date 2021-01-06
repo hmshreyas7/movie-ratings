@@ -21,3 +21,13 @@
   background-color: $primary-color !important;
   color: $on-primary-color !important;
 }
+
+.rating-error {
+  align-items: center;
+  bottom: $spacing-normal;
+  color: red;
+  display: flex;
+  gap: $spacing-small;
+  position: absolute;
+  transform: translate(0, -50%);
+}
