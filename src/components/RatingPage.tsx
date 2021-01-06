@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { genres, sorts } from '../filterSortOptions';
 import { RootState } from '../rootState';
-import RatingCard from './RatingCard';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 import { loading } from '../actions';
+import MovieCard from './MovieCard';
 
 type SelectedOption = {
   value: string;
@@ -66,7 +66,7 @@ function RatingPage() {
     }
 
     return filteredMovies.map((ratingInfo) => (
-      <RatingCard key={ratingInfo.id} movieInfo={ratingInfo} />
+      <MovieCard key={ratingInfo.id} movieInfo={ratingInfo} />
     ));
   };
 

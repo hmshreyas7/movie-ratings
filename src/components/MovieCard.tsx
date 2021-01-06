@@ -7,7 +7,7 @@ import { RootState } from '../rootState';
 import RatingDialog from './RatingDialog';
 
 interface MovieCardProps {
-  movieInfo: OMDbMovie;
+  movieInfo: OMDbMovie | MovieRatingInfo;
 }
 
 function MovieCard(props: MovieCardProps) {
@@ -15,6 +15,17 @@ function MovieCard(props: MovieCardProps) {
   let dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
   let [isDialogOpen, setDialogOpen] = useState(false);
+  const { movieInfo } = props;
+
+  const { id, poster, title, rating } =
+    'imdbID' in movieInfo
+      ? {
+          id: movieInfo.imdbID,
+          poster: movieInfo.Poster,
+          title: movieInfo.Title,
+          rating: movieInfo.imdbRating,
+        }
+      : movieInfo;
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -29,29 +40,33 @@ function MovieCard(props: MovieCardProps) {
   };
 
   const handleView = () => {
-    history.push(`/movie/${props.movieInfo.imdbID}`);
-    dispatch(viewMovieDetails(props.movieInfo));
+    if ('imdbID' in movieInfo) {
+      history.push(`/movie/${id}`);
+      dispatch(viewMovieDetails(movieInfo));
+    }
   };
 
   return (
     <div className='movie-card-wrapper'>
       <div className='movie-card-poster'>
-        <img src={props.movieInfo.Poster} alt={props.movieInfo.Title} />
-        <div className='movie-card-overlay'>
-          <RatingDialog
-            isOpen={isDialogOpen}
-            onClose={handleDialogClose}
-            movieInfo={props.movieInfo}
-          />
-          <button onClick={handleAdd}>Add</button>
-          <button onClick={handleView}>View</button>
-        </div>
+        <img src={poster} alt={title} />
+        {'imdbID' in movieInfo && (
+          <div className='movie-card-overlay'>
+            <RatingDialog
+              isOpen={isDialogOpen}
+              onClose={handleDialogClose}
+              movieInfo={movieInfo}
+            />
+            <button onClick={handleAdd}>Add</button>
+            <button onClick={handleView}>View</button>
+          </div>
+        )}
       </div>
       <div className='movie-card-info'>
-        <p>{props.movieInfo.Title}</p>
+        <p>{title}</p>
         <div className='movie-card-rating'>
           <Grade fontSize='small' />
-          <p>{props.movieInfo.imdbRating}</p>
+          <p>{rating}</p>
         </div>
       </div>
     </div>
