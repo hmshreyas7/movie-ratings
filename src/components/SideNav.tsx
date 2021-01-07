@@ -13,6 +13,7 @@ function SideNav() {
   let [isExpanded, setExpanded] = useState(false);
   const menu = useRef<HTMLDivElement>(null);
   const isLoading = useSelector((state: RootState) => state.isLoading);
+  let [menuHeight, setMenuHeight] = useState(menu.current?.offsetHeight);
 
   useEffect(() => {
     setExpanded(!mediaQueryMatch);
@@ -28,12 +29,16 @@ function SideNav() {
   }, [mediaQueryMatch]);
 
   useEffect(() => {
-    if (mediaQueryMatch && isLoading && menu.current) {
-      (document.querySelector(
-        '.loading-indicator'
-      ) as HTMLElement).style.top = `${menu.current.offsetHeight.toString()}px`;
+    const loadingIndicator = document.querySelector(
+      '.loading-indicator div'
+    ) as HTMLElement;
+
+    if (mediaQueryMatch && loadingIndicator && isLoading && menuHeight) {
+      loadingIndicator.style.position = 'absolute';
+      loadingIndicator.style.top = `calc(0.5 * (100% + ${menuHeight.toString()}px))`;
+      loadingIndicator.style.transition = 'top 0.3s';
     }
-  }, [mediaQueryMatch, isLoading]);
+  }, [mediaQueryMatch, isLoading, menuHeight]);
 
   const handleMenuToggle = () => {
     setExpanded((prevValue) => !prevValue);
@@ -43,6 +48,10 @@ function SideNav() {
     if (!menu.current?.contains(e.target as Node)) {
       setExpanded(false);
     }
+  };
+
+  const handleTransitionEnd = () => {
+    mediaQueryMatch && setMenuHeight(menu.current?.offsetHeight);
   };
 
   return (
@@ -55,7 +64,10 @@ function SideNav() {
           </div>
         )}
       </div>
-      <div className={isExpanded ? 'side-nav-expanded' : 'side-nav-collapsed'}>
+      <div
+        className={isExpanded ? 'side-nav-expanded' : 'side-nav-collapsed'}
+        onTransitionEnd={handleTransitionEnd}
+      >
         <Avatar />
         <SearchBar />
         <NavLinks />
