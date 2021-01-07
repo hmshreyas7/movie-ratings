@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loading } from '../actions';
 import { RootState } from '../rootState';
+import NoData from './NoData';
 
 function RatingStatsPage() {
   const user = useSelector((state: RootState) => state.user);
@@ -16,6 +17,7 @@ function RatingStatsPage() {
     favoriteGenres: [],
     avgRatingsByDecade: [],
   });
+  let [hasRatings, setHasRatings] = useState(true);
   let dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ function RatingStatsPage() {
       .then((res) => {
         setStats(res.data);
         dispatch(loading(false));
+        res.data.totalRatings === 0 && setHasRatings(false);
       })
       .catch((err) => {
         console.log(err);
@@ -98,15 +101,21 @@ function RatingStatsPage() {
           <CircularProgress color='inherit' />
         </div>
       )}
-      <p>Total ratings: {stats.totalRatings}</p>
-      <p>Average rating: {stats.avgRating}</p>
-      <div className='rating-distribution'>
-        <h2>Rating Distribution</h2>
-        {getRatingDistribution()}
-      </div>
-      {buildRatingStatsTable('Runtime', stats.avgRatingsByRuntime)}
-      {buildRatingStatsTable('Genre', stats.favoriteGenres)}
-      {buildRatingStatsTable('Decade', stats.avgRatingsByDecade)}
+      {hasRatings ? (
+        <>
+          <p>Total ratings: {stats.totalRatings}</p>
+          <p>Average rating: {stats.avgRating}</p>
+          <div className='rating-distribution'>
+            <h2>Rating Distribution</h2>
+            {getRatingDistribution()}
+          </div>
+          {buildRatingStatsTable('Runtime', stats.avgRatingsByRuntime)}
+          {buildRatingStatsTable('Genre', stats.favoriteGenres)}
+          {buildRatingStatsTable('Decade', stats.avgRatingsByDecade)}
+        </>
+      ) : (
+        <NoData />
+      )}
     </div>
   );
 }

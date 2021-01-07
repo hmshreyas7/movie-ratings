@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 import { loading } from '../actions';
 import MovieCard from './MovieCard';
+import NoData from './NoData';
 
 type SelectedOption = {
   value: string;
@@ -23,6 +24,7 @@ function RatingPage() {
     sortSetting: {} as SelectedOption,
   });
   let [ratingCount, setRatingCount] = useState(0);
+  let [hasRatings, setHasRatings] = useState(true);
   let history = useHistory();
   let dispatch = useDispatch();
 
@@ -76,6 +78,7 @@ function RatingPage() {
       .then((res) => {
         setMovies(res.data.reverse());
         dispatch(loading(false));
+        res.data.length === 0 && setHasRatings(false);
       })
       .catch((err) => {
         console.log(err);
@@ -97,31 +100,37 @@ function RatingPage() {
           <CircularProgress color='inherit' />
         </div>
       )}
-      <div className='rating-page-info-wrapper'>
-        <h1>
-          {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}
-        </h1>
-        <div className='stats-button' onClick={goToRatingStatsPage}>
-          Stats
-        </div>
-      </div>
-      <div className='filter-sort'>
-        <Select
-          isMulti
-          name='genreFilter'
-          options={genres}
-          placeholder='Genre'
-          onChange={handleChange}
-        />
-        <Select
-          isClearable
-          name='sortSetting'
-          options={sorts}
-          placeholder='Sort'
-          onChange={handleChange}
-        />
-      </div>
-      <div className='movie-grid'>{getMovies()}</div>
+      {hasRatings ? (
+        <>
+          <div className='rating-page-info-wrapper'>
+            <h1>
+              {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}
+            </h1>
+            <div className='stats-button' onClick={goToRatingStatsPage}>
+              Stats
+            </div>
+          </div>
+          <div className='filter-sort'>
+            <Select
+              isMulti
+              name='genreFilter'
+              options={genres}
+              placeholder='Genre'
+              onChange={handleChange}
+            />
+            <Select
+              isClearable
+              name='sortSetting'
+              options={sorts}
+              placeholder='Sort'
+              onChange={handleChange}
+            />
+          </div>
+          <div className='movie-grid'>{getMovies()}</div>
+        </>
+      ) : (
+        <NoData />
+      )}
     </div>
   );
 }
