@@ -35,6 +35,7 @@ function RatingDialog(props: RatingDialogProps) {
   const handleClose = () => {
     onClose();
     setRating(0);
+    setRatingHover(-1);
     setRatingError(false);
   };
 
