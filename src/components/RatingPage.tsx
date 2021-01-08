@@ -6,7 +6,7 @@ import { RootState } from '../rootState';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
-import { loading } from '../actions';
+import { loading, updateRating } from '../actions';
 import MovieCard from './MovieCard';
 import NoData from './NoData';
 
@@ -18,6 +18,9 @@ type SelectedOption = {
 function RatingPage() {
   const user = useSelector((state: RootState) => state.user);
   let isLoading = useSelector((state: RootState) => state.isLoading);
+  let isRatingUpdated = useSelector(
+    (state: RootState) => state.isRatingUpdated
+  );
   let [movies, setMovies] = useState<Array<MovieRatingInfo>>([]);
   let [filterSort, setFilterSort] = useState({
     genreFilter: [] as SelectedOption[],
@@ -86,8 +89,9 @@ function RatingPage() {
 
     return () => {
       dispatch(loading(true));
+      dispatch(updateRating(false));
     };
-  }, [user.uid, dispatch]);
+  }, [user.uid, dispatch, isRatingUpdated]);
 
   const goToRatingStatsPage = () => {
     history.push('/rating-stats');

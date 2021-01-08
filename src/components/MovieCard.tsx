@@ -1,8 +1,9 @@
 import { Grade } from '@material-ui/icons';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { viewMovieDetails } from '../actions';
+import { updateRating, viewMovieDetails } from '../actions';
 import { RootState } from '../rootState';
 import RatingDialog from './RatingDialog';
 
@@ -31,7 +32,7 @@ function MovieCard(props: MovieCardProps) {
     setDialogOpen(false);
   };
 
-  const handleAdd = () => {
+  const handleRate = () => {
     if (user.uid) {
       setDialogOpen(true);
     } else {
@@ -46,21 +47,37 @@ function MovieCard(props: MovieCardProps) {
     }
   };
 
+  const handleDelete = () => {
+    axios
+      .delete(`http://localhost:5000/delete-rating/${user.uid}/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        dispatch(updateRating(true));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className='movie-card-wrapper'>
       <div className='movie-card-poster'>
         <img src={poster} alt={title} />
-        {'imdbID' in movieInfo && (
-          <div className='movie-card-overlay'>
-            <RatingDialog
-              isOpen={isDialogOpen}
-              onClose={handleDialogClose}
-              movieInfo={movieInfo}
-            />
-            <button onClick={handleAdd}>Add</button>
+        <div className='movie-card-overlay'>
+          <RatingDialog
+            isOpen={isDialogOpen}
+            onClose={handleDialogClose}
+            movieInfo={movieInfo}
+          />
+          <button onClick={handleRate}>
+            {'imdbID' in movieInfo ? 'Add' : 'Edit'}
+          </button>
+          {'imdbID' in movieInfo ? (
             <button onClick={handleView}>View</button>
-          </div>
-        )}
+          ) : (
+            <button onClick={handleDelete}>Delete</button>
+          )}
+        </div>
       </div>
       <div className='movie-card-info'>
         <p>{title}</p>

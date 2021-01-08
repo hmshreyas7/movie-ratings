@@ -1,23 +1,38 @@
 import axios from 'axios';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Button, Dialog, DialogTitle } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../rootState';
 import { ErrorOutline } from '@material-ui/icons';
+import { updateRating } from '../actions';
 
 interface RatingDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  movieInfo: OMDbMovie;
+  movieInfo: OMDbMovie | MovieRatingInfo;
 }
 
 function RatingDialog(props: RatingDialogProps) {
   const { isOpen, onClose, movieInfo } = props;
-  let [rating, setRating] = useState(0);
+  const movieTitle = 'imdbID' in movieInfo ? movieInfo.Title : movieInfo.title;
+  let [rating, setRating] = useState(
+    'imdbID' in movieInfo ? 0 : movieInfo.rating
+  );
   let [ratingHover, setRatingHover] = useState(-1);
   let [isRatingError, setRatingError] = useState(false);
   const user = useSelector((state: RootState) => state.user);
+  let dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      if (!isOpen) {
+        setRating('imdbID' in movieInfo ? 0 : movieInfo.rating);
+        setRatingHover(-1);
+        setRatingError(false);
+      }
+    };
+  }, [movieInfo, isOpen]);
 
   const hoverLabels: Record<number, string> = {
     1: 'Appalling',
@@ -30,13 +45,6 @@ function RatingDialog(props: RatingDialogProps) {
     8: 'Very Good',
     9: 'Great',
     10: 'Masterpiece',
-  };
-
-  const handleClose = () => {
-    onClose();
-    setRating(0);
-    setRatingHover(-1);
-    setRatingError(false);
   };
 
   const handleRatingHoverChange = (
@@ -67,20 +75,19 @@ function RatingDialog(props: RatingDialogProps) {
         })
         .then((res) => {
           console.log(res.data);
+          !('imdbID' in movieInfo) && dispatch(updateRating(true));
+          onClose();
         })
         .catch((err) => {
           console.log(err);
         });
-
-      onClose();
-      setRating(0);
     }
   };
 
   return (
-    <Dialog className='rating-dialog' onClose={handleClose} open={isOpen}>
+    <Dialog className='rating-dialog' onClose={onClose} open={isOpen}>
       <DialogTitle id='simple-dialog-title'>
-        {`Select rating for "${movieInfo.Title}"`}
+        {`Select rating for "${movieTitle}"`}
       </DialogTitle>
       <div className='rating-hover'>
         <p>{hoverLabels[ratingHover === -1 ? rating : ratingHover]}</p>

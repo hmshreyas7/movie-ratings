@@ -5,4 +5,5 @@ type RootState = Readonly<{
   searchQuery: string;
   movieInfo: OMDbMovie;
   isLoading: boolean;
+  isRatingUpdated: boolean;
 }>;

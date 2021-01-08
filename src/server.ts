@@ -82,12 +82,13 @@ app.post('/login', (req, res) => {
 
 app.post('/rate', (req, res) => {
   const { userID, movie, rating } = req.body;
+  const isOMDbMovie = 'imdbID' in movie;
   const movieRating: MovieRating = {
-    movieID: movie.imdbID,
+    movieID: isOMDbMovie ? movie.imdbID : movie.id,
     rating: rating,
   };
 
-  Movie.exists({ _id: movie.imdbID })
+  Movie.exists({ _id: movieRating.movieID })
     .then((movieExists) => {
       if (!movieExists) {
         const newMovie = new Movie({
@@ -105,20 +106,65 @@ app.post('/rate', (req, res) => {
       console.log(err);
     });
 
+  if (isOMDbMovie) {
+    User.updateOne(
+      {
+        _id: userID,
+      },
+      {
+        $push: {
+          movieRatings: movieRating,
+        },
+      },
+      (err, response) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send('Rating received');
+        }
+      }
+    );
+  } else {
+    User.updateOne(
+      {
+        _id: userID,
+        'movieRatings.movieID': movieRating.movieID,
+      },
+      {
+        $set: {
+          'movieRatings.$.rating': movieRating.rating,
+        },
+      },
+      (err, response) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send('Rating updated');
+        }
+      }
+    );
+  }
+});
+
+app.delete('/delete-rating/:userID/:movieID', (req, res) => {
+  const { userID, movieID } = req.params;
+
   User.updateOne(
     {
       _id: userID,
     },
     {
-      $push: {
-        movieRatings: movieRating,
+      $pull: {
+        movieRatings: {
+          movieID: movieID,
+        },
       },
     },
     (err, response) => {
       if (err) {
         console.log(err);
       } else {
-        res.send('Rating received');
+        res.send('Rating deleted');
       }
     }
   );

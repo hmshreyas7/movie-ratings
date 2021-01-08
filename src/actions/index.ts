@@ -33,3 +33,10 @@ export const loading = (isLoading: boolean) => {
     payload: isLoading,
   };
 };
+
+export const updateRating = (isRatingUpdated: boolean) => {
+  return {
+    type: 'UPDATE_RATING',
+    payload: isRatingUpdated,
+  };
+};
