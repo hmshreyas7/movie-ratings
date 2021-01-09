@@ -76,16 +76,21 @@ function RatingPage() {
   };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/movieratings/${user.uid}`)
-      .then((res) => {
-        setMovies(res.data.reverse());
-        dispatch(loading(false));
-        res.data.length === 0 && setHasRatings(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (user.uid) {
+      axios
+        .get(`http://localhost:5000/movieratings/${user.uid}`)
+        .then((res) => {
+          setMovies(res.data.reverse());
+          dispatch(loading(false));
+          setHasRatings(res.data.length !== 0);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      dispatch(loading(false));
+      setHasRatings(false);
+    }
 
     return () => {
       dispatch(loading(true));

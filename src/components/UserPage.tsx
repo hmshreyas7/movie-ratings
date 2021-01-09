@@ -23,19 +23,23 @@ function UserPage() {
   let dispatch = useDispatch();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/watchstats/${user.uid}`)
-      .then((res) => {
-        setWatchStats({
-          hoursWatched: res.data.hoursWatched,
-          favoriteGenres: res.data.favoriteGenres,
-          favoriteDecades: res.data.favoriteDecades,
+    if (user.uid) {
+      axios
+        .get(`http://localhost:5000/watchstats/${user.uid}`)
+        .then((res) => {
+          setWatchStats({
+            hoursWatched: res.data.hoursWatched,
+            favoriteGenres: res.data.favoriteGenres,
+            favoriteDecades: res.data.favoriteDecades,
+          });
+          dispatch(loading(false));
+        })
+        .catch((err) => {
+          console.log(err);
         });
-        dispatch(loading(false));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } else {
+      dispatch(loading(false));
+    }
 
     return () => {
       dispatch(loading(true));

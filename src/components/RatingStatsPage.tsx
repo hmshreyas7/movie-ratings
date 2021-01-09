@@ -21,16 +21,21 @@ function RatingStatsPage() {
   let dispatch = useDispatch();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/movie-rating-stats/${user.uid}`)
-      .then((res) => {
-        setStats(res.data);
-        dispatch(loading(false));
-        res.data.totalRatings === 0 && setHasRatings(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (user.uid) {
+      axios
+        .get(`http://localhost:5000/movie-rating-stats/${user.uid}`)
+        .then((res) => {
+          setStats(res.data);
+          dispatch(loading(false));
+          setHasRatings(res.data.totalRatings !== 0);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      dispatch(loading(false));
+      setHasRatings(false);
+    }
 
     return () => {
       dispatch(loading(true));

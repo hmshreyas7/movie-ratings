@@ -175,8 +175,8 @@ app.get('/watchstats/:userID', (req, res) => {
 
   let userMovieRatings = Array<MovieRating>();
 
-  User.findById(userID, (err, response) => {
-    if (!err && response) {
+  User.findById(userID).then((response) => {
+    if (response) {
       userMovieRatings = response.get('movieRatings');
       let hoursWatched = Array<number>();
       let ratingsByGenre: Record<string, Array<number>> = {};
@@ -233,7 +233,9 @@ app.get('/watchstats/:userID', (req, res) => {
           }
 
           let totalHoursWatched =
-            hoursWatched.reduce((acc, value) => acc + value) / 60;
+            hoursWatched.length > 0
+              ? hoursWatched.reduce((acc, value) => acc + value) / 60
+              : 0;
 
           const sortedFavoriteGenres = Object.entries(favoriteGenres)
             .sort((a, b) => a[0].localeCompare(b[0]))
