@@ -8,7 +8,11 @@ interface RootState {
   user: firebase.User;
 }
 
-function NavLinks() {
+interface NavLinksProps {
+  onMenuToggle: () => void;
+}
+
+function NavLinks(props: NavLinksProps) {
   const [isSelected, setSelected] = useState(false);
   const match = useRouteMatch('/(login|settings)');
   let user = useSelector((state: RootState) => state.user);
@@ -22,6 +26,8 @@ function NavLinks() {
     }
   }, [match]);
 
+  const handleMenuToggle = props.onMenuToggle;
+
   const handleLogout = () => {
     firebase.auth().signOut();
     dispatch(logout());
@@ -29,7 +35,7 @@ function NavLinks() {
 
   return (
     <ul className='nav-links-list'>
-      <li>
+      <li onClick={handleMenuToggle}>
         {!user.uid ? (
           <Link
             className='nav-link'

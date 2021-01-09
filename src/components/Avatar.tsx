@@ -10,6 +10,10 @@ interface RootState {
   user: firebase.User;
 }
 
+interface AvatarProps {
+  onMenuToggle?: () => void;
+}
+
 function setAvatarImage(photoURL: string) {
   if (photoURL.includes('graph.facebook.com')) {
     dotenv.config();
@@ -20,7 +24,7 @@ function setAvatarImage(photoURL: string) {
   }
 }
 
-function Avatar() {
+function Avatar(props: AvatarProps) {
   const user = useSelector((state: RootState) => state.user);
   let history = useHistory();
   let dispatch = useDispatch();
@@ -37,8 +41,11 @@ function Avatar() {
     };
   }, [dispatch]);
 
+  const handleMenuToggle = props.onMenuToggle;
+
   const handleClick = () => {
     if (user.displayName) {
+      handleMenuToggle && handleMenuToggle();
       history.push('/user');
     }
   };

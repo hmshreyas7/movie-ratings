@@ -41,7 +41,7 @@ function SideNav() {
   }, [mediaQueryMatch, isLoading, menuHeight]);
 
   const handleMenuToggle = () => {
-    setExpanded((prevValue) => !prevValue);
+    mediaQueryMatch && setExpanded((prevValue) => !prevValue);
   };
 
   const handleMenuClose = (e: MouseEvent) => {
@@ -57,7 +57,11 @@ function SideNav() {
   return (
     <div className='side-nav-drawer' ref={menu}>
       <div className='side-nav-logo-toggle-wrapper'>
-        <Home />
+        <Home
+          onMenuToggle={() => {
+            mediaQueryMatch && setExpanded(false);
+          }}
+        />
         {mediaQueryMatch && (
           <div className='side-nav-toggle' onClick={handleMenuToggle}>
             {isExpanded ? <ArrowDropUp /> : <ArrowDropDown />}
@@ -68,9 +72,9 @@ function SideNav() {
         className={isExpanded ? 'side-nav-expanded' : 'side-nav-collapsed'}
         onTransitionEnd={handleTransitionEnd}
       >
-        <Avatar />
-        <SearchBar />
-        <NavLinks />
+        <Avatar onMenuToggle={handleMenuToggle} />
+        <SearchBar onMenuToggle={handleMenuToggle} />
+        <NavLinks onMenuToggle={handleMenuToggle} />
       </div>
     </div>
   );

@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Home() {
+interface HomeProps {
+  onMenuToggle: () => void;
+}
+
+function Home(props: HomeProps) {
+  const handleMenuToggle = props.onMenuToggle;
+
   return (
     <div className='home-wrapper'>
-      <Link to='/'>
+      <Link to='/' onClick={handleMenuToggle}>
         <h2>
           m<span>o</span>vi<span>e</span> ra<span>t</span>in<span>g</span>s
         </h2>
