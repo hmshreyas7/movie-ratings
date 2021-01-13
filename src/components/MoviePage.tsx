@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { RootState } from '../rootState';
 import NoData from './NoData';
 import RatingDialog from './RatingDialog';
+import imdbLogo from '../assets/imdb-logo.png';
 
 function MoviePage() {
   const movieInfo = useSelector((state: RootState) => state.movieInfo);
@@ -36,12 +37,21 @@ function MoviePage() {
       {movieInfo.imdbID ? (
         <>
           <div className='movie-page-header'>
-            <h1>{movieInfo.Title}</h1>
+            <h1>{`${movieInfo.Title} (${movieInfo.Year})`}</h1>
             <RatingDialog
               isOpen={isDialogOpen}
               onClose={handleDialogClose}
               movieInfo={movieInfo}
             />
+            <div className='movie-page-external-link' title='View on IMDb'>
+              <a
+                href={`https://www.imdb.com/title/${movieInfo.imdbID}`}
+                target='_blank'
+                rel='noreferrer'
+              >
+                <img src={imdbLogo} alt='IMDb' />
+              </a>
+            </div>
             <div className='movie-page-icon-action' onClick={handleAdd}>
               <Add />
             </div>

@@ -14,7 +14,11 @@
 .movie-page-header {
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  gap: $spacing-small;
+}
+
+.movie-page-header h1 {
+  flex: 1;
 }
 
 .movie-page-info {
@@ -63,6 +67,18 @@
   border-radius: 8px;
   display: flex;
   padding: $spacing-small;
+}
+
+.movie-page-external-link {
+  border-radius: 8px;
+  cursor: pointer;
+  height: 40px;
+  overflow: hidden;
+  width: 40px;
+}
+
+.movie-page-external-link img {
+  width: 100%;
 }
 
 .movie-page-icon-action {
