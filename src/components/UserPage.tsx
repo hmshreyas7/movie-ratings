@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 import { loading } from '../actions';
+import NoData from './NoData';
 
 function UserPage() {
   const user = useSelector((state: RootState) => state.user);
@@ -50,38 +51,46 @@ function UserPage() {
     history.push('/ratings');
   };
 
-  return (
-    <div className='user-page-wrapper'>
-      {isLoading && (
-        <div className='loading-indicator'>
-          <CircularProgress color='inherit' />
+  if (user.uid) {
+    return (
+      <div className='user-page-wrapper'>
+        {isLoading && (
+          <div className='loading-indicator'>
+            <CircularProgress color='inherit' />
+          </div>
+        )}
+        <div className='user-page-profile'>
+          <div className='user-page-avatar'>
+            <Avatar />
+          </div>
+          <div className='user-page-info'>
+            <h1>{user.displayName}</h1>
+            <p>Joined: {joinDateTime}</p>
+          </div>
         </div>
-      )}
-      <div className='user-page-profile'>
-        <div className='user-page-avatar'>
-          <Avatar />
+        <div className='user-page-watchstats'>
+          <p>Hours watched: {watchStats.hoursWatched}</p>
+          <p>
+            Favorite genres:{' '}
+            {watchStats.favoriteGenres.map((genre) => genre[0]).join(', ')}
+          </p>
+          <p>
+            Favorite decades:{' '}
+            {watchStats.favoriteDecades.map((decade) => decade[0]).join(', ')}
+          </p>
         </div>
-        <div className='user-page-info'>
-          <h1>{user.displayName}</h1>
-          <p>Joined: {joinDateTime}</p>
+        <div className='rating-history-button' onClick={goToRatingPage}>
+          Rating History
         </div>
       </div>
-      <div className='user-page-watchstats'>
-        <p>Hours watched: {watchStats.hoursWatched}</p>
-        <p>
-          Favorite genres:{' '}
-          {watchStats.favoriteGenres.map((genre) => genre[0]).join(', ')}
-        </p>
-        <p>
-          Favorite decades:{' '}
-          {watchStats.favoriteDecades.map((decade) => decade[0]).join(', ')}
-        </p>
+    );
+  } else {
+    return (
+      <div className='user-page-wrapper'>
+        <NoData />
       </div>
-      <div className='rating-history-button' onClick={goToRatingPage}>
-        Rating History
-      </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default UserPage;

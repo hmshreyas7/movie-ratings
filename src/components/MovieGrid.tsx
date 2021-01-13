@@ -6,6 +6,7 @@ import MovieCard from './MovieCard';
 import { RootState } from '../rootState';
 import { CircularProgress } from '@material-ui/core';
 import { loading } from '../actions';
+import NoData from './NoData';
 
 interface MovieGridProps {
   isSearch: boolean;
@@ -74,9 +75,11 @@ function MovieGrid(props: MovieGridProps) {
   }>;
 
   let [movies, setMovies] = useState<Array<OMDbMovie>>([]);
+  let [isError, setError] = useState(false);
 
   useEffect(() => {
     setMovies([]);
+    setError(false);
 
     axios
       .get(tmdbMovies)
@@ -107,6 +110,8 @@ function MovieGrid(props: MovieGridProps) {
       })
       .catch((err) => {
         console.log(err);
+        dispatch(loading(false));
+        setError(true);
       });
 
     return () => {
@@ -114,25 +119,33 @@ function MovieGrid(props: MovieGridProps) {
     };
   }, [tmdbKey, omdbKey, tmdbMovies, dispatch]);
 
-  return (
-    <div className='movie-grid-wrapper'>
-      {isLoading && (
-        <div className='loading-indicator'>
-          <CircularProgress color='inherit' />
-        </div>
-      )}
-      {!props.isSearch && <h1>Now Playing</h1>}
-      {props.isSearch && searchQuery.length > 0 && (
-        <h1>Showing results for "{searchQuery}"</h1>
-      )}
-      <div className='movie-grid'>
-        {[...movies].map(
-          (movie: OMDbMovie) =>
-            movie.imdbID && <MovieCard key={movie.imdbID} movieInfo={movie} />
+  if (!isError) {
+    return (
+      <div className='movie-grid-wrapper'>
+        {isLoading && (
+          <div className='loading-indicator'>
+            <CircularProgress color='inherit' />
+          </div>
         )}
+        {!props.isSearch && <h1>Now Playing</h1>}
+        {props.isSearch && searchQuery.length > 0 && (
+          <h1>Showing results for "{searchQuery}"</h1>
+        )}
+        <div className='movie-grid'>
+          {[...movies].map(
+            (movie: OMDbMovie) =>
+              movie.imdbID && <MovieCard key={movie.imdbID} movieInfo={movie} />
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className='movie-grid-wrapper'>
+        <NoData />
+      </div>
+    );
+  }
 }
 
 MovieGrid.defaultProps = {
