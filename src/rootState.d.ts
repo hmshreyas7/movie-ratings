@@ -6,4 +6,5 @@ type RootState = Readonly<{
   movieInfo: OMDbMovie;
   isLoading: boolean;
   isRatingUpdated: boolean;
+  regionCode: string;
 }>;

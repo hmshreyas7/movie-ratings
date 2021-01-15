@@ -3,6 +3,7 @@ import searchQueryReducer from './searchQuery';
 import movieInfoReducer from './movieInfo';
 import isLoadingReducer from './isLoading';
 import isRatingUpdatedReducer from './isRatingUpdated';
+import regionCodeReducer from './regionCode';
 import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   movieInfo: movieInfoReducer,
   isLoading: isLoadingReducer,
   isRatingUpdated: isRatingUpdatedReducer,
+  regionCode: regionCodeReducer,
 });
 
 export default rootReducer;

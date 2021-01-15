@@ -11,6 +11,21 @@
   text-align: center;
 }
 
+.movie-grid-header-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-small;
+  margin: 0 auto;
+  padding: $spacing-normal;
+  width: fit-content;
+}
+
+.region-select {
+  color: $dropdown-text-color;
+  width: 100%;
+}
+
 .movie-grid {
   display: grid;
   gap: $spacing-normal;

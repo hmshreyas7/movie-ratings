@@ -5,8 +5,10 @@ import axios from 'axios';
 import MovieCard from './MovieCard';
 import { RootState } from '../rootState';
 import { CircularProgress } from '@material-ui/core';
-import { loading } from '../actions';
+import { loading, setRegion } from '../actions';
 import NoData from './NoData';
+import Select from 'react-select';
+import regionOptions from '../regionOptions';
 
 interface MovieGridProps {
   isSearch: boolean;
@@ -15,6 +17,7 @@ interface MovieGridProps {
 function MovieGrid(props: MovieGridProps) {
   let searchQuery = useSelector((state: RootState) => state.searchQuery);
   let isLoading = useSelector((state: RootState) => state.isLoading);
+  let regionCode = useSelector((state: RootState) => state.regionCode);
   let dispatch = useDispatch();
 
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
@@ -28,7 +31,8 @@ function MovieGrid(props: MovieGridProps) {
   const tmdbMovies = props.isSearch
     ? tmdbSearchAPI +
       `/movie?api_key=${tmdbKey}&language=en-US&query=${searchQuery}&page=1&include_adult=false`
-    : tmdbAPI + `/now_playing?api_key=${tmdbKey}&language=en-US&page=1`;
+    : tmdbAPI +
+      `/now_playing?api_key=${tmdbKey}&language=en-US&page=1&region=${regionCode}`;
 
   type TMDbMovie = Readonly<{
     adult: boolean;
@@ -119,6 +123,10 @@ function MovieGrid(props: MovieGridProps) {
     };
   }, [tmdbKey, omdbKey, tmdbMovies, dispatch]);
 
+  const handleChange = (selected: any) => {
+    dispatch(setRegion(selected ? selected.value : ''));
+  };
+
   if (!isError) {
     return (
       <div className='movie-grid-wrapper'>
@@ -127,7 +135,26 @@ function MovieGrid(props: MovieGridProps) {
             <CircularProgress color='inherit' />
           </div>
         )}
-        {!props.isSearch && <h1>Now Playing</h1>}
+        {!props.isSearch && (
+          <div className='movie-grid-header-wrapper'>
+            <h1>Now Playing</h1>
+            <div className='region-select'>
+              <Select
+                isClearable={regionCode !== ''}
+                backspaceRemovesValue={false}
+                name='regionSetting'
+                options={regionOptions}
+                onChange={handleChange}
+                value={{
+                  value: regionCode,
+                  label: regionOptions.filter(
+                    (region) => region.value === regionCode
+                  )[0].label,
+                }}
+              />
+            </div>
+          </div>
+        )}
         {props.isSearch && searchQuery.length > 0 && (
           <h1>Showing results for "{searchQuery}"</h1>
         )}

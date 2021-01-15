@@ -40,3 +40,10 @@ export const updateRating = (isRatingUpdated: boolean) => {
     payload: isRatingUpdated,
   };
 };
+
+export const setRegion = (regionCode: string) => {
+  return {
+    type: 'SET_REGION',
+    payload: regionCode,
+  };
+};
