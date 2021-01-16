@@ -17,6 +17,7 @@ mongoose.connect('mongodb://localhost:27017/movieRatingsDB', {
 type MovieRating = Readonly<{
   movieID: string;
   rating: number;
+  timestamp: string;
 }>;
 
 const userSchema = new mongoose.Schema({
@@ -81,11 +82,12 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/rate', (req, res) => {
-  const { userID, movie, rating } = req.body;
+  const { userID, movie, rating, timestamp } = req.body;
   const isOMDbMovie = 'imdbID' in movie;
   const movieRating: MovieRating = {
     movieID: isOMDbMovie ? movie.imdbID : movie.id,
     rating: rating,
+    timestamp: timestamp,
   };
 
   Movie.exists({ _id: movieRating.movieID })
@@ -279,6 +281,7 @@ app.get('/movieratings/:userID', (req, res) => {
                   poster: response.get('poster'),
                   genres: response.get('genres'),
                   rating: movieRating.rating,
+                  timestamp: movieRating.timestamp,
                 } as MovieRatingInfo;
               }
             })

@@ -72,6 +72,7 @@ function RatingDialog(props: RatingDialogProps) {
           userID: user.uid,
           movie: movieInfo,
           rating: rating,
+          timestamp: new Date().toString(),
         })
         .then((res) => {
           console.log(res.data);

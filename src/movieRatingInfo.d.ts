@@ -4,4 +4,5 @@ type MovieRatingInfo = Readonly<{
   poster: string;
   genres: string;
   rating: number;
+  timestamp: string;
 }>;

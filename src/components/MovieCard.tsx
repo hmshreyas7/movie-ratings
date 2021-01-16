@@ -18,13 +18,14 @@ function MovieCard(props: MovieCardProps) {
   let [isDialogOpen, setDialogOpen] = useState(false);
   const { movieInfo } = props;
 
-  const { id, poster, title, rating } =
+  const { id, poster, title, rating, timestamp } =
     'imdbID' in movieInfo
       ? {
           id: movieInfo.imdbID,
           poster: movieInfo.Poster,
           title: movieInfo.Title,
           rating: movieInfo.imdbRating,
+          timestamp: null,
         }
       : movieInfo;
 
@@ -59,8 +60,34 @@ function MovieCard(props: MovieCardProps) {
       });
   };
 
+  const getTimestamp = () => {
+    if (timestamp) {
+      const customTimestamp = new Date(timestamp).toLocaleString([], {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      });
+      const [date, year, time] = customTimestamp.split(', ');
+
+      const currentYear = new Date().getFullYear().toString();
+      let formattedTimestamp = date;
+      formattedTimestamp += year === currentYear ? '' : `, ${year}`;
+      formattedTimestamp += ` - ${time}`;
+
+      return formattedTimestamp;
+    } else {
+      return null;
+    }
+  };
+
   return (
     <div className='movie-card-wrapper'>
+      {timestamp && (
+        <div className='movie-card-timestamp'>{getTimestamp()}</div>
+      )}
       <div className='movie-card-poster'>
         <img src={poster} alt={title} />
         <div className='movie-card-overlay'>
