@@ -1,11 +1,11 @@
 import { Grade } from '@material-ui/icons';
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { updateRating, viewMovieDetails } from '../actions';
+import { viewMovieDetails } from '../actions';
 import { RootState } from '../rootState';
 import RatingDialog from './RatingDialog';
+import ConfirmationDialog from './ConfirmationDialog';
 
 interface MovieCardProps {
   movieInfo: OMDbMovie | MovieRatingInfo;
@@ -15,7 +15,8 @@ function MovieCard(props: MovieCardProps) {
   let history = useHistory();
   let dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
-  let [isDialogOpen, setDialogOpen] = useState(false);
+  let [isRatingDialogOpen, setRatingDialogOpen] = useState(false);
+  let [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const { movieInfo } = props;
 
   const { id, poster, title, rating, timestamp } =
@@ -29,13 +30,17 @@ function MovieCard(props: MovieCardProps) {
         }
       : movieInfo;
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
+  const handleRatingDialogClose = () => {
+    setRatingDialogOpen(false);
+  };
+
+  const handleConfirmationDialogClose = () => {
+    setConfirmationDialogOpen(false);
   };
 
   const handleRate = () => {
     if (user.uid) {
-      setDialogOpen(true);
+      setRatingDialogOpen(true);
     } else {
       history.push('/login');
     }
@@ -49,15 +54,7 @@ function MovieCard(props: MovieCardProps) {
   };
 
   const handleDelete = () => {
-    axios
-      .delete(`http://localhost:5000/delete-rating/${user.uid}/${id}`)
-      .then((res) => {
-        console.log(res.data);
-        dispatch(updateRating(true));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setConfirmationDialogOpen(true);
   };
 
   const getTimestamp = () => {
@@ -92,10 +89,17 @@ function MovieCard(props: MovieCardProps) {
         <img src={poster} alt={title} />
         <div className='movie-card-overlay'>
           <RatingDialog
-            isOpen={isDialogOpen}
-            onClose={handleDialogClose}
+            isOpen={isRatingDialogOpen}
+            onClose={handleRatingDialogClose}
             movieInfo={movieInfo}
           />
+          {!('imdbID' in movieInfo) && (
+            <ConfirmationDialog
+              isOpen={isConfirmationDialogOpen}
+              onClose={handleConfirmationDialogClose}
+              movieInfo={movieInfo}
+            />
+          )}
           <button onClick={handleRate}>
             {'imdbID' in movieInfo ? 'Add' : 'Edit'}
           </button>

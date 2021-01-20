@@ -1,0 +1,16 @@
+.confirmation-dialog .MuiPaper-root {
+  align-items: center;
+  gap: $spacing-normal;
+  padding: $spacing-normal;
+  text-align: center;
+}
+
+.confirmation-button-wrapper {
+  display: flex;
+  gap: $spacing-small;
+}
+
+.confirmation-button {
+  background-color: $primary-color !important;
+  color: $on-primary-color !important;
+}
