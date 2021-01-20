@@ -250,7 +250,7 @@ app.get('/watchstats/:userID', (req, res) => {
           res.send({
             hoursWatched: Math.round(totalHoursWatched),
             favoriteGenres: sortedFavoriteGenres.slice(0, 5),
-            favoriteDecades: sortedFavoriteDecades.slice(0, 5),
+            favoriteDecade: sortedFavoriteDecades[0][0],
           });
         })
         .catch((err) => {

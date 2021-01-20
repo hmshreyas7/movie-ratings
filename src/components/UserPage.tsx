@@ -18,7 +18,7 @@ function UserPage() {
   let [watchStats, setWatchStats] = useState({
     hoursWatched: 0,
     favoriteGenres: [],
-    favoriteDecades: [],
+    favoriteDecade: '',
   });
   let history = useHistory();
   let dispatch = useDispatch();
@@ -31,7 +31,7 @@ function UserPage() {
           setWatchStats({
             hoursWatched: res.data.hoursWatched,
             favoriteGenres: res.data.favoriteGenres,
-            favoriteDecades: res.data.favoriteDecades,
+            favoriteDecade: res.data.favoriteDecade,
           });
           dispatch(loading(false));
         })
@@ -74,10 +74,7 @@ function UserPage() {
             Favorite genres:{' '}
             {watchStats.favoriteGenres.map((genre) => genre[0]).join(', ')}
           </p>
-          <p>
-            Favorite decades:{' '}
-            {watchStats.favoriteDecades.map((decade) => decade[0]).join(', ')}
-          </p>
+          <p>Favorite decade: {watchStats.favoriteDecade}</p>
         </div>
         <div className='rating-history-button' onClick={goToRatingPage}>
           Rating History
