@@ -321,7 +321,7 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
           1: 0,
         };
         let ratingsByGenre: Record<string, Array<number>> = {};
-        let favoriteGenres: Record<string, string> = {};
+        let favoriteGenres: Record<string, Array<string>> = {};
         let ratingsByRuntime: Record<string, Array<number>> = {
           '< 60 min': [],
           '60-89 min': [],
@@ -330,9 +330,9 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
           '150-179 min': [],
           '180+ min': [],
         };
-        let avgRatingsByRuntime: Record<string, string> = {};
+        let avgRatingsByRuntime: Record<string, Array<string>> = {};
         let ratingsByDecade: Record<string, Array<number>> = {};
-        let avgRatingsByDecade: Record<string, string> = {};
+        let avgRatingsByDecade: Record<string, Array<string>> = {};
 
         userMovieRatings.forEach((movieRating) => {
           ratingDistribution[movieRating.rating] += 1;
@@ -387,33 +387,36 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
         )
           .then((response) => {
             for (const runtime in ratingsByRuntime) {
-              avgRatingsByRuntime[runtime] =
-                ratingsByRuntime[runtime].length > 0
+              const temp = ratingsByRuntime[runtime];
+              avgRatingsByRuntime[runtime] = [
+                temp.length > 0
                   ? (
-                      ratingsByRuntime[runtime].reduce(
-                        (val, acc) => acc + val
-                      ) / ratingsByRuntime[runtime].length
+                      temp.reduce((val, acc) => acc + val) / temp.length
                     ).toFixed(2)
-                  : '0.00';
+                  : '0.00',
+                `(${temp.length})`,
+              ];
             }
 
             for (const genre in ratingsByGenre) {
-              favoriteGenres[genre] = (
-                ratingsByGenre[genre].reduce((val, acc) => acc + val) /
-                ratingsByGenre[genre].length
-              ).toFixed(2);
+              const temp = ratingsByGenre[genre];
+              favoriteGenres[genre] = [
+                (temp.reduce((val, acc) => acc + val) / temp.length).toFixed(2),
+                `(${temp.length})`,
+              ];
             }
 
             for (const decade in ratingsByDecade) {
-              avgRatingsByDecade[decade] = (
-                ratingsByDecade[decade].reduce((val, acc) => acc + val) /
-                ratingsByDecade[decade].length
-              ).toFixed(2);
+              const temp = ratingsByDecade[decade];
+              avgRatingsByDecade[decade] = [
+                (temp.reduce((val, acc) => acc + val) / temp.length).toFixed(2),
+                `(${temp.length})`,
+              ];
             }
 
             const sortedFavoriteGenres = Object.entries(favoriteGenres)
               .sort((a, b) => a[0].localeCompare(b[0]))
-              .sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
+              .sort((a, b) => parseFloat(b[1][0]) - parseFloat(a[1][0]));
 
             const sortedAvgRatingsByDecade = Object.entries(
               avgRatingsByDecade

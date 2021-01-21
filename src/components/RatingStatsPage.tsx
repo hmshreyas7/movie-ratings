@@ -90,7 +90,12 @@ function RatingStatsPage() {
           </div>
           <div className='rating-stats-column'>
             {ratingGroupArray.map((ratingGroup) => (
-              <div>{ratingGroup[1]}</div>
+              <div>{ratingGroup[1][0]}</div>
+            ))}
+          </div>
+          <div className='rating-stats-column'>
+            {ratingGroupArray.map((ratingGroup) => (
+              <div>{ratingGroup[1][1]}</div>
             ))}
           </div>
         </div>
