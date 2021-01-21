@@ -11,7 +11,6 @@ function RatingStatsPage() {
   let isLoading = useSelector((state: RootState) => state.isLoading);
   let [stats, setStats] = useState({
     totalRatings: 0,
-    avgRating: '',
     ratingDistribution: {},
     avgRatingsByRuntime: [],
     favoriteGenres: [],
@@ -108,8 +107,6 @@ function RatingStatsPage() {
       )}
       {hasRatings ? (
         <>
-          <p>Total ratings: {stats.totalRatings}</p>
-          <p>Average rating: {stats.avgRating}</p>
           <div className='rating-distribution'>
             <h2>Rating Distribution</h2>
             {getRatingDistribution()}

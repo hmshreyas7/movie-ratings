@@ -27,6 +27,7 @@ function RatingPage() {
     sortSetting: {} as SelectedOption,
   });
   let [ratingCount, setRatingCount] = useState(0);
+  let [avgRating, setAvgRating] = useState('0.00');
   let [hasRatings, setHasRatings] = useState(true);
   let history = useHistory();
   let dispatch = useDispatch();
@@ -56,8 +57,20 @@ function RatingPage() {
       return isGenrePresent;
     });
 
+    let tempAvgRating = 0;
+
+    filteredMovies.forEach((movieRating) => {
+      tempAvgRating += movieRating.rating;
+    });
+
+    const formattedAvgRating =
+      filteredMovies.length > 0
+        ? (tempAvgRating / filteredMovies.length).toFixed(2)
+        : '0.00';
+
     if (ratingCount !== filteredMovies.length) {
       setRatingCount(filteredMovies.length);
+      setAvgRating(formattedAvgRating);
     }
 
     if (filterSort.sortSetting?.value !== 'none') {
@@ -115,6 +128,7 @@ function RatingPage() {
             <h1>
               {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}
             </h1>
+            <p>Average: {avgRating}</p>
             <div className='stats-button' onClick={goToRatingStatsPage}>
               Stats
             </div>

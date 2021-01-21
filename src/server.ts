@@ -308,19 +308,18 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
     .then((response) => {
       if (response) {
         userMovieRatings = response.get('movieRatings');
-        let avgRating = 0,
-          ratingDistribution: Record<number, number> = {
-            10: 0,
-            9: 0,
-            8: 0,
-            7: 0,
-            6: 0,
-            5: 0,
-            4: 0,
-            3: 0,
-            2: 0,
-            1: 0,
-          };
+        let ratingDistribution: Record<number, number> = {
+          10: 0,
+          9: 0,
+          8: 0,
+          7: 0,
+          6: 0,
+          5: 0,
+          4: 0,
+          3: 0,
+          2: 0,
+          1: 0,
+        };
         let ratingsByGenre: Record<string, Array<number>> = {};
         let favoriteGenres: Record<string, string> = {};
         let ratingsByRuntime: Record<string, Array<number>> = {
@@ -336,14 +335,8 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
         let avgRatingsByDecade: Record<string, string> = {};
 
         userMovieRatings.forEach((movieRating) => {
-          avgRating += movieRating.rating;
           ratingDistribution[movieRating.rating] += 1;
         });
-
-        const formattedAvgRating =
-          userMovieRatings.length > 0
-            ? (avgRating / userMovieRatings.length).toFixed(2)
-            : '0.00';
 
         Promise.all(
           userMovieRatings.map((movieRating) => {
@@ -428,7 +421,6 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
 
             res.send({
               totalRatings: userMovieRatings.length,
-              avgRating: formattedAvgRating,
               ratingDistribution: ratingDistribution,
               avgRatingsByRuntime: Object.entries(avgRatingsByRuntime),
               favoriteGenres: sortedFavoriteGenres,
