@@ -19,6 +19,7 @@ function UserPage() {
     hoursWatched: 0,
     favoriteGenres: [],
     favoriteDecade: '',
+    topRatedMovies: [],
   });
   let history = useHistory();
   let dispatch = useDispatch();
@@ -32,6 +33,7 @@ function UserPage() {
             hoursWatched: res.data.hoursWatched,
             favoriteGenres: res.data.favoriteGenres,
             favoriteDecade: res.data.favoriteDecade,
+            topRatedMovies: res.data.topRatedMovies,
           });
           dispatch(loading(false));
         })
@@ -69,12 +71,35 @@ function UserPage() {
           </div>
         </div>
         <div className='user-page-watchstats'>
-          <p>Hours watched: {watchStats.hoursWatched}</p>
-          <p>
-            Favorite genres:{' '}
-            {watchStats.favoriteGenres.map((genre) => genre[0]).join(', ')}
-          </p>
-          <p>Favorite decade: {watchStats.favoriteDecade}</p>
+          <div className='watchstats-main-wrapper'>
+            <div className='watchstats-item'>
+              <p>Watch time</p>
+              <p>{watchStats.hoursWatched} hours</p>
+            </div>
+            <div className='watchstats-item'>
+              <p>Favorite genres</p>
+              <p>
+                {watchStats.favoriteGenres.map((genre) => genre[0]).join(', ')}
+              </p>
+            </div>
+            <div className='watchstats-item'>
+              <p>Favorite decade</p>
+              <p>{watchStats.favoriteDecade}</p>
+            </div>
+          </div>
+          <div className='watchstats-item'>
+            <p>Top-rated movies</p>
+            <div className='top-rated-movie-card-wrapper'>
+              {watchStats.topRatedMovies
+                .sort((a: any, b: any) => a.title.localeCompare(b.title))
+                .sort((a: any, b: any) => b.rating - a.rating)
+                .map((movie: any) => (
+                  <div key={movie.id} className='top-rated-movie-card'>
+                    <img src={movie.poster} alt={movie.title} />
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
         <div className='rating-history-button' onClick={goToRatingPage}>
           Rating History

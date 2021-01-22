@@ -186,6 +186,12 @@ app.get('/watchstats/:userID', (req, res) => {
       let ratingsByDecade: Record<string, Array<number>> = {};
       let favoriteDecades: Record<string, string> = {};
 
+      let favoriteMovieIDs = [...userMovieRatings]
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 5)
+        .map((rating) => rating.movieID);
+      let topRatedMovies = Array<{}>();
+
       Promise.all(
         userMovieRatings.map((movieRating) => {
           const movieID = movieRating.movieID;
@@ -214,6 +220,15 @@ app.get('/watchstats/:userID', (req, res) => {
                 ratingsByDecade[releaseDecade].push(rating);
               } else {
                 ratingsByDecade[releaseDecade] = [rating];
+              }
+
+              if (favoriteMovieIDs.includes(movieID)) {
+                topRatedMovies.push({
+                  id: movieID,
+                  title: response.get('title'),
+                  poster: response.get('poster'),
+                  rating: rating,
+                });
               }
             }
           });
@@ -251,6 +266,7 @@ app.get('/watchstats/:userID', (req, res) => {
             hoursWatched: Math.round(totalHoursWatched),
             favoriteGenres: sortedFavoriteGenres.slice(0, 5),
             favoriteDecade: sortedFavoriteDecades[0][0],
+            topRatedMovies: topRatedMovies,
           });
         })
         .catch((err) => {
