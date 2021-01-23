@@ -5,6 +5,7 @@ import MovieGrid from './components/MovieGrid';
 import MoviePage from './components/MoviePage';
 import RatingPage from './components/RatingPage';
 import RatingStatsPage from './components/RatingStatsPage';
+import SettingsPage from './components/SettingsPage';
 import SideNav from './components/SideNav';
 import SignUpPage from './components/SignUpPage';
 import UserPage from './components/UserPage';
@@ -22,6 +23,9 @@ function App() {
         </Route>
         <Route path='/search'>
           <MovieGrid isSearch={true} />
+        </Route>
+        <Route path='/settings'>
+          <SettingsPage />
         </Route>
         <Route path='/movie/:id'>
           <MoviePage />

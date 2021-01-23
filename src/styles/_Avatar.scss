@@ -7,7 +7,18 @@
   padding: $spacing-normal;
 }
 
-.avatar-wrapper img {
+.avatar-image-wrapper {
+  align-items: center;
   border-radius: 50%;
+  display: flex;
   height: $avatar-size-normal;
+  overflow: hidden;
+  position: relative;
+  width: $avatar-size-normal;
+}
+
+.avatar-wrapper img {
+  position: absolute;
+  top: 0;
+  width: 100%;
 }

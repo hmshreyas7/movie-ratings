@@ -1,0 +1,18 @@
+.settings-page-wrapper {
+  bottom: 0;
+  color: $on-primary-color;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-normal;
+  left: 240px;
+  margin: $spacing-normal;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+@media only screen and (max-width: 600px) {
+  .settings-page-wrapper {
+    position: unset;
+  }
+}

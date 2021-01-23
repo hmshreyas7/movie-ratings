@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useRouteMatch } from 'react-router-dom';
 import firebase from 'firebase/app';
@@ -13,18 +13,9 @@ interface NavLinksProps {
 }
 
 function NavLinks(props: NavLinksProps) {
-  const [isSelected, setSelected] = useState(false);
   const match = useRouteMatch('/(login|settings)');
   let user = useSelector((state: RootState) => state.user);
   let dispatch = useDispatch();
-
-  useEffect(() => {
-    if (match?.isExact) {
-      setSelected(true);
-    } else {
-      setSelected(false);
-    }
-  }, [match]);
 
   const handleMenuToggle = props.onMenuToggle;
 
@@ -39,7 +30,7 @@ function NavLinks(props: NavLinksProps) {
         {!user.uid ? (
           <Link
             className='nav-link'
-            style={{ color: isSelected ? '#EF564D' : '' }}
+            style={{ color: match?.url === '/login' ? '#EF564D' : '' }}
             to='/login'
           >
             Login
@@ -50,7 +41,15 @@ function NavLinks(props: NavLinksProps) {
           </span>
         )}
       </li>
-      <li>Settings</li>
+      <li>
+        <Link
+          className='nav-link'
+          style={{ color: match?.url === '/settings' ? '#EF564D' : '' }}
+          to={user.uid ? '/settings' : '/login'}
+        >
+          Settings
+        </Link>
+      </li>
     </ul>
   );
 }
