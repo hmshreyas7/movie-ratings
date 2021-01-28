@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './reducers';
+import ScrollToTop from './components/ScrollToTop';
 
 dotenv.config();
 let firebaseConfig = {
@@ -25,6 +26,7 @@ let store = createStore(rootReducer);
 ReactDOM.render(
   <Provider store={store}>
     <Router>
+      <ScrollToTop />
       <App />
     </Router>
   </Provider>,
