@@ -37,6 +37,8 @@ function LoginPage() {
           .post('http://localhost:5000/login', {
             _id: user.uid,
             name: user.displayName,
+            email: user.email,
+            birthday: '',
             joinDateTime: user.metadata.creationTime,
             lastSignInDateTime: user.metadata.lastSignInTime,
           })

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import axios from 'axios';
 
 const app = express();
 const port = 5000;
@@ -23,6 +24,8 @@ type MovieRating = Readonly<{
 const userSchema = new mongoose.Schema({
   _id: String,
   name: String,
+  email: String,
+  birthday: String,
   joinDateTime: String,
   lastSignInDateTime: String,
   movieRatings: Array<MovieRating>(),
@@ -41,12 +44,67 @@ const movieSchema = new mongoose.Schema({
 
 const Movie = mongoose.model('Movie', movieSchema);
 
+const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
+  const serverPrefix = 'us7';
+  const apiKey = '87668d61f35373dc2a9ee9293782898a-us7';
+  const listID = 'c890c6d1d2';
+
+  const [fname, ...lname] = name ? name.split(' ') : [];
+  const formattedBirthday = birthday.slice(-5).split('-').join('/');
+
+  const mergeFields = name
+    ? {
+        FNAME: fname,
+        LNAME: lname,
+        BIRTHDAY: formattedBirthday,
+      }
+    : {
+        BIRTHDAY: formattedBirthday,
+      };
+
+  const data = {
+    members: [
+      {
+        email_address: email,
+        status: 'subscribed',
+        merge_fields: mergeFields,
+      },
+    ],
+  };
+
+  const JSONData = JSON.stringify(data);
+  const url = `https://${serverPrefix}.api.mailchimp.com/3.0/lists/${listID}`;
+
+  axios({
+    url: url,
+    method: 'POST',
+    data: JSONData,
+    auth: {
+      username: 'shosamane',
+      password: apiKey,
+    },
+  })
+    .then(() => {
+      console.log('Subscribed/updated');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 app.get('/', (req, res) => {
   res.send('Hello');
 });
 
 app.post('/login', (req, res) => {
-  const { _id, name, joinDateTime, lastSignInDateTime } = req.body;
+  const {
+    _id,
+    name,
+    email,
+    birthday,
+    joinDateTime,
+    lastSignInDateTime,
+  } = req.body;
 
   User.exists({ _id: _id })
     .then((userExists) => {
@@ -68,11 +126,15 @@ app.post('/login', (req, res) => {
         const loggedInUser = new User({
           _id: _id,
           name: name,
+          email: email,
+          birthday: birthday,
           joinDateTime: joinDateTime,
           lastSignInDateTime: lastSignInDateTime,
           movieRatings: [],
         });
         loggedInUser.save();
+
+        setMailchimpInfo(email, birthday, name);
       }
       res.send('User login success');
     })
@@ -454,6 +516,46 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+});
+
+app.get('/profile-info/:userID', (req, res) => {
+  const userID = req.params.userID;
+
+  User.findById(userID).then((response) => {
+    if (response) {
+      const email = response.get('email');
+      const birthday = response.get('birthday');
+      res.send({
+        email,
+        birthday,
+      });
+    }
+  });
+});
+
+app.post('/profile-info', (req, res) => {
+  const { userID, email, birthday } = req.body;
+
+  User.updateOne(
+    {
+      _id: userID,
+    },
+    {
+      $set: {
+        email: email,
+        birthday: birthday,
+      },
+    },
+    (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send('Profile info updated');
+      }
+    }
+  );
+
+  setMailchimpInfo(email, birthday);
 });
 
 app.listen(port, () => {
