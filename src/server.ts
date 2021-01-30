@@ -73,6 +73,7 @@ const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
         merge_fields: mergeFields,
       },
     ],
+    update_existing: name === undefined,
   };
 
   const JSONData = JSON.stringify(data);
