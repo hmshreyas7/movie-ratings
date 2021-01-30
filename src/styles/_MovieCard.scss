@@ -3,11 +3,16 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-small;
+  margin-top: $spacing-large;
+  position: relative;
   width: 250px;
 }
 
 .movie-card-timestamp {
   color: $card-secondary-text-color;
+  position: absolute;
+  top: -$spacing-normal;
+  transform: translate(0, -50%);
 }
 
 .movie-card-poster {

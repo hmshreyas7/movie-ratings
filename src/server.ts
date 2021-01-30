@@ -382,6 +382,53 @@ app.get('/movieratings/:userID', (req, res) => {
   });
 });
 
+app.get('/movieratings/:userID/:movieID', (req, res) => {
+  const { userID, movieID } = req.params;
+
+  User.findOne(
+    {
+      _id: userID,
+    },
+    {
+      movieRatings: {
+        $elemMatch: {
+          movieID: movieID,
+        },
+      },
+    },
+    (err, response: any) => {
+      if (err) {
+        console.log(err);
+      } else {
+        if (response && response.movieRatings.length === 1) {
+          const movieRating = response.movieRatings[0];
+
+          Movie.findById(movieID)
+            .then((response) => {
+              if (response) {
+                res.send({
+                  id: movieID,
+                  title: response.get('title'),
+                  poster: response.get('poster'),
+                  genres: response.get('genres'),
+                  rating: movieRating.rating,
+                  timestamp: movieRating.timestamp,
+                } as MovieRatingInfo);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          res.send({
+            id: movieID,
+          });
+        }
+      }
+    }
+  );
+});
+
 app.get('/movie-rating-stats/:userID', (req, res) => {
   const userID = req.params.userID;
   let userMovieRatings = Array<MovieRating>();

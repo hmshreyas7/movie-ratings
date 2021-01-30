@@ -5,7 +5,7 @@ import axios from 'axios';
 import MovieCard from './MovieCard';
 import { RootState } from '../rootState';
 import { CircularProgress } from '@material-ui/core';
-import { loading, setRegion } from '../actions';
+import { loading, setRegion, updateRating } from '../actions';
 import NoData from './NoData';
 import Select from 'react-select';
 import regionOptions from '../regionOptions';
@@ -18,6 +18,10 @@ function MovieGrid(props: MovieGridProps) {
   let searchQuery = useSelector((state: RootState) => state.searchQuery);
   let isLoading = useSelector((state: RootState) => state.isLoading);
   let regionCode = useSelector((state: RootState) => state.regionCode);
+  let user = useSelector((state: RootState) => state.user);
+  let isRatingUpdated = useSelector(
+    (state: RootState) => state.isRatingUpdated
+  );
   let dispatch = useDispatch();
 
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
@@ -78,7 +82,7 @@ function MovieGrid(props: MovieGridProps) {
     Response: string;
   }>;
 
-  let [movies, setMovies] = useState<Array<OMDbMovie>>([]);
+  let [movies, setMovies] = useState<Array<OMDbMovie | MovieRatingInfo>>([]);
   let [isError, setError] = useState(false);
 
   useEffect(() => {
@@ -98,8 +102,20 @@ function MovieGrid(props: MovieGridProps) {
               .get(externalIDs)
               .then((res) => {
                 let imdbID = res.data.imdb_id;
+
+                return axios.get(
+                  `http://localhost:5000/movieratings/${user.uid}/${imdbID}`
+                );
+              })
+              .then((res) => {
+                const movieInfo = res.data;
+
+                if (movieInfo.title) {
+                  return Promise.resolve({ data: movieInfo });
+                }
+
                 const movieDetails =
-                  omdbAPI + `/?i=${imdbID}&apikey=${omdbKey}`;
+                  omdbAPI + `/?i=${movieInfo.id}&apikey=${omdbKey}`;
                 return axios.get(movieDetails);
               })
               .then((res) => res.data)
@@ -120,11 +136,24 @@ function MovieGrid(props: MovieGridProps) {
 
     return () => {
       dispatch(loading(true));
+      dispatch(updateRating(false));
     };
-  }, [tmdbKey, omdbKey, tmdbMovies, dispatch]);
+  }, [tmdbKey, omdbKey, tmdbMovies, dispatch, user.uid, isRatingUpdated]);
 
   const handleChange = (selected: any) => {
     dispatch(setRegion(selected ? selected.value : ''));
+  };
+
+  const getKey = (movie: OMDbMovie | MovieRatingInfo) => {
+    if (typeof movie === 'string') {
+      return null;
+    }
+
+    if ('imdbID' in movie) {
+      return movie.imdbID;
+    } else {
+      return movie.id;
+    }
   };
 
   if (!isError) {
@@ -159,10 +188,10 @@ function MovieGrid(props: MovieGridProps) {
           <h1>Showing results for "{searchQuery}"</h1>
         )}
         <div className='movie-grid'>
-          {[...movies].map(
-            (movie: OMDbMovie) =>
-              movie.imdbID && <MovieCard key={movie.imdbID} movieInfo={movie} />
-          )}
+          {[...movies].map((movie: OMDbMovie | MovieRatingInfo) => {
+            const key = getKey(movie);
+            return key && <MovieCard key={key} movieInfo={movie} />;
+          })}
         </div>
       </div>
     );

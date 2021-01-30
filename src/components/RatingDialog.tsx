@@ -76,7 +76,7 @@ function RatingDialog(props: RatingDialogProps) {
         })
         .then((res) => {
           console.log(res.data);
-          !('imdbID' in movieInfo) && dispatch(updateRating(true));
+          dispatch(updateRating(true));
           onClose();
         })
         .catch((err) => {
