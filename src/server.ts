@@ -3,6 +3,9 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '../.env' });
 
 const app = express();
 const port = 5000;
@@ -45,9 +48,9 @@ const movieSchema = new mongoose.Schema({
 const Movie = mongoose.model('Movie', movieSchema);
 
 const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
-  const serverPrefix = 'us7';
-  const apiKey = '87668d61f35373dc2a9ee9293782898a-us7';
-  const listID = 'c890c6d1d2';
+  const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX!;
+  const apiKey = process.env.MAILCHIMP_API_KEY!;
+  const listID = process.env.MAILCHIMP_LIST_ID!;
 
   const [fname, ...lname] = name ? name.split(' ') : [];
   const formattedBirthday = birthday.slice(-5).split('-').join('/');
