@@ -1,8 +1,8 @@
 import { Grade } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { viewMovieDetails } from '../actions';
+import { setMoviePosterPosition, viewMovieDetails } from '../actions';
 import { RootState } from '../rootState';
 import RatingDialog from './RatingDialog';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -17,6 +17,7 @@ function MovieCard(props: MovieCardProps) {
   const user = useSelector((state: RootState) => state.user);
   let [isRatingDialogOpen, setRatingDialogOpen] = useState(false);
   let [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const posterRef = useRef<HTMLImageElement>(null);
   const { movieInfo } = props;
 
   const { id, poster, title, rating, timestamp } =
@@ -50,6 +51,15 @@ function MovieCard(props: MovieCardProps) {
     if ('imdbID' in movieInfo) {
       history.push(`/movie/${id}`);
       dispatch(viewMovieDetails(movieInfo));
+
+      if (posterRef.current) {
+        dispatch(
+          setMoviePosterPosition({
+            x: posterRef.current.x,
+            y: posterRef.current.y,
+          })
+        );
+      }
     }
   };
 
@@ -86,7 +96,7 @@ function MovieCard(props: MovieCardProps) {
         <div className='movie-card-timestamp'>{getTimestamp()}</div>
       )}
       <div className='movie-card-poster'>
-        <img src={poster} alt={title} />
+        <img src={poster} alt={title} ref={posterRef} />
         <div className='movie-card-overlay'>
           <RatingDialog
             isOpen={isRatingDialogOpen}

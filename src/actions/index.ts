@@ -27,6 +27,13 @@ export const viewMovieDetails = (movie: OMDbMovie) => {
   };
 };
 
+export const setMoviePosterPosition = (position: Position) => {
+  return {
+    type: 'SET_MOVIE_POSTER_POSITION',
+    payload: position,
+  };
+};
+
 export const loading = (isLoading: boolean) => {
   return {
     type: 'LOADING',
