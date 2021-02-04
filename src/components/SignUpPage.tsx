@@ -1,10 +1,13 @@
 import React, { ChangeEvent, useState } from 'react';
 import firebase from 'firebase/app';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../actions';
+import { RootState } from '../rootState';
+import NoData from './NoData';
 
 function SignUpPage() {
+  const user = useSelector((state: RootState) => state.user);
   let [signUpInfo, setSignUpInfo] = useState({
     fname: '',
     lname: '',
@@ -58,45 +61,53 @@ function SignUpPage() {
     });
   };
 
-  return (
-    <div className='signup-page-wrapper'>
-      <div className='signup-module-wrapper'>
-        <input
-          placeholder='First name'
-          name='fname'
-          value={signUpInfo.fname}
-          onChange={handleChange}
-          required
-        />
-        <input
-          placeholder='Last name'
-          name='lname'
-          value={signUpInfo.lname}
-          onChange={handleChange}
-        />
-        <input
-          type='email'
-          placeholder='Email'
-          name='email'
-          value={signUpInfo.email}
-          onChange={handleChange}
-        />
-        <input
-          type='password'
-          placeholder='Password'
-          name='password'
-          value={signUpInfo.password}
-          onChange={handleChange}
-        />
-        <input
-          type='button'
-          value='Create Account'
-          onClick={createAcc}
-          onChange={handleChange}
-        />
+  if (!user.uid) {
+    return (
+      <div className='signup-page-wrapper'>
+        <div className='signup-module-wrapper'>
+          <input
+            placeholder='First name'
+            name='fname'
+            value={signUpInfo.fname}
+            onChange={handleChange}
+            required
+          />
+          <input
+            placeholder='Last name'
+            name='lname'
+            value={signUpInfo.lname}
+            onChange={handleChange}
+          />
+          <input
+            type='email'
+            placeholder='Email'
+            name='email'
+            value={signUpInfo.email}
+            onChange={handleChange}
+          />
+          <input
+            type='password'
+            placeholder='Password'
+            name='password'
+            value={signUpInfo.password}
+            onChange={handleChange}
+          />
+          <input
+            type='button'
+            value='Create Account'
+            onClick={createAcc}
+            onChange={handleChange}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className='signup-page-wrapper'>
+        <NoData />
+      </div>
+    );
+  }
 }
 
 export default SignUpPage;
