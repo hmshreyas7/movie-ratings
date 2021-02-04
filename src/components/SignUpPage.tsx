@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../actions';
 import { RootState } from '../rootState';
 import NoData from './NoData';
+import axios from 'axios';
 
 function SignUpPage() {
   const user = useSelector((state: RootState) => state.user);
@@ -43,6 +44,18 @@ function SignUpPage() {
             .then(() => {
               dispatch(login(newUser));
               history.push('/');
+
+              return axios.post('http://localhost:5000/login', {
+                _id: newUser.uid,
+                name: newUser.displayName,
+                email: newUser.email,
+                birthday: '',
+                joinDateTime: newUser.metadata.creationTime,
+                lastSignInDateTime: newUser.metadata.lastSignInTime,
+              });
+            })
+            .then((res) => {
+              console.log(res.data);
             })
             .catch((err) => {
               console.log(err);
