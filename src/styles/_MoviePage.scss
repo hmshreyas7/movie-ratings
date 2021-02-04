@@ -38,6 +38,10 @@
   width: 300px;
 }
 
+.movie-page-info-poster img {
+  object-fit: cover;
+}
+
 .movie-page-info-extra {
   display: flex;
   flex-direction: column;
