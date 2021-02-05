@@ -1,14 +1,16 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import firebase from 'firebase/app';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../actions';
+import { loading, login } from '../actions';
 import { RootState } from '../rootState';
 import NoData from './NoData';
 import axios from 'axios';
+import { CircularProgress } from '@material-ui/core';
 
 function SignUpPage() {
   const user = useSelector((state: RootState) => state.user);
+  const isLoading = useSelector((state: RootState) => state.isLoading);
   let [signUpInfo, setSignUpInfo] = useState({
     fname: '',
     lname: '',
@@ -18,6 +20,14 @@ function SignUpPage() {
   let [errorMessage, setErrorMessage] = useState('');
   let history = useHistory();
   let dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loading(false));
+
+    return () => {
+      dispatch(loading(true));
+    };
+  }, [dispatch]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === ' ') {
@@ -42,6 +52,7 @@ function SignUpPage() {
 
   const createAcc = (event: any) => {
     event.preventDefault();
+    dispatch(loading(true));
 
     firebase
       .auth()
@@ -85,12 +96,20 @@ function SignUpPage() {
       })
       .catch((err) => {
         setErrorMessage(err.message);
+      })
+      .finally(() => {
+        dispatch(loading(false));
       });
   };
 
   if (!user.uid) {
     return (
       <div className='signup-page-wrapper'>
+        {isLoading && (
+          <div className='loading-indicator'>
+            <CircularProgress color='inherit' />
+          </div>
+        )}
         <form className='signup-module-wrapper' onSubmit={createAcc}>
           <input
             placeholder='First name'

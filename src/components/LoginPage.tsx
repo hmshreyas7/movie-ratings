@@ -75,6 +75,7 @@ function LoginPage() {
 
   const emailSignIn = (event: any) => {
     event.preventDefault();
+    dispatch(loading(true));
 
     firebase
       .auth()
@@ -88,6 +89,9 @@ function LoginPage() {
       })
       .catch((err) => {
         setErrorMessage(err.message);
+      })
+      .finally(() => {
+        dispatch(loading(false));
       });
   };
 
