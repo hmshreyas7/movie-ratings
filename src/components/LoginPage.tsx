@@ -25,6 +25,7 @@ function LoginPage() {
     email: '',
     password: '',
   });
+  let [errorMessage, setErrorMessage] = useState('');
   let isLoading = useSelector((state: RootState) => state.isLoading);
 
   useEffect(() => {
@@ -62,6 +63,8 @@ function LoginPage() {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
+    setErrorMessage('');
+
     setLoginInfo((prevInfo) => {
       return {
         ...prevInfo,
@@ -70,15 +73,22 @@ function LoginPage() {
     });
   };
 
-  const emailSignIn = () => {
+  const emailSignIn = (event: any) => {
+    event.preventDefault();
+
     firebase
       .auth()
-      .signInWithEmailAndPassword(loginInfo.email, loginInfo.password);
-
-    setLoginInfo({
-      email: '',
-      password: '',
-    });
+      .signInWithEmailAndPassword(loginInfo.email, loginInfo.password)
+      .then(() => {
+        setLoginInfo({
+          email: '',
+          password: '',
+        });
+        setErrorMessage('');
+      })
+      .catch((err) => {
+        setErrorMessage(err.message);
+      });
   };
 
   const goToSignUp = () => {
@@ -101,13 +111,14 @@ function LoginPage() {
             Sign in with Facebook
           </button>
         </div>
-        <div className='standard-login-wrapper'>
+        <form className='standard-login-wrapper' onSubmit={emailSignIn}>
           <input
             type='email'
             placeholder='Email'
             name='email'
             value={loginInfo.email}
             onChange={handleChange}
+            required
           />
           <input
             type='password'
@@ -115,12 +126,14 @@ function LoginPage() {
             name='password'
             value={loginInfo.password}
             onChange={handleChange}
+            required
           />
           <div className='standard-login-buttons-wrapper'>
-            <input type='submit' value='Login' onClick={emailSignIn} />
+            <input type='submit' value='Login' />
             <input type='button' value='Sign Up' onClick={goToSignUp} />
           </div>
-        </div>
+          {errorMessage && <p>{errorMessage}</p>}
+        </form>
       </div>
     </div>
   );

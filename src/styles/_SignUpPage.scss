@@ -15,11 +15,21 @@
   flex-direction: column;
   gap: $spacing-normal;
   padding: $spacing-normal;
+  position: relative;
 }
 
 .signup-module-wrapper input {
   outline: none;
   padding: $spacing-small;
+}
+
+.signup-module-wrapper input:last-child {
+  cursor: pointer;
+}
+
+.signup-module-wrapper p {
+  bottom: -$spacing-large;
+  position: absolute;
 }
 
 @media only screen and (max-width: 600px) {

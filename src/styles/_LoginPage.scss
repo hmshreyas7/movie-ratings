@@ -66,11 +66,17 @@
   flex-direction: column;
   gap: $spacing-normal;
   padding: $spacing-normal;
+  position: relative;
 }
 
 .standard-login-wrapper input {
   outline: none;
   padding: $spacing-small;
+}
+
+.standard-login-wrapper p {
+  bottom: -$spacing-large;
+  position: absolute;
 }
 
 .standard-login-buttons-wrapper {
@@ -81,6 +87,7 @@
 }
 
 .standard-login-buttons-wrapper input {
+  cursor: pointer;
   flex: 1;
 }
 
