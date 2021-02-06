@@ -75,8 +75,11 @@
 }
 
 .standard-login-wrapper p {
-  bottom: -$spacing-large;
+  bottom: 0;
+  left: $spacing-normal;
   position: absolute;
+  right: $spacing-normal;
+  transform: translateY(100%);
 }
 
 .standard-login-buttons-wrapper {
