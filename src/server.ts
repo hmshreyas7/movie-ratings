@@ -331,7 +331,10 @@ app.get('/watchstats/:userID', (req, res) => {
           res.send({
             hoursWatched: Math.round(totalHoursWatched),
             favoriteGenres: sortedFavoriteGenres.slice(0, 5),
-            favoriteDecade: sortedFavoriteDecades[0][0],
+            favoriteDecade:
+              sortedFavoriteDecades.length > 0
+                ? sortedFavoriteDecades[0][0]
+                : '',
             topRatedMovies: topRatedMovies,
           });
         })
