@@ -58,14 +58,6 @@ function SignUpPage() {
       .auth()
       .createUserWithEmailAndPassword(signUpInfo.email, signUpInfo.password)
       .then((userCredential) => {
-        setSignUpInfo({
-          fname: '',
-          lname: '',
-          email: '',
-          password: '',
-        });
-        setErrorMessage('');
-
         if (userCredential.user) {
           let newUser = userCredential.user;
 
@@ -96,13 +88,17 @@ function SignUpPage() {
       })
       .catch((err) => {
         setErrorMessage(err.message);
-      })
-      .finally(() => {
         dispatch(loading(false));
       });
   };
 
-  if (!user.uid) {
+  if (user.uid && !isLoading) {
+    return (
+      <div className='signup-page-wrapper'>
+        <NoData />
+      </div>
+    );
+  } else {
     return (
       <div className='signup-page-wrapper'>
         {isLoading && (
@@ -150,12 +146,6 @@ function SignUpPage() {
           <input type='submit' value='Create Account' />
           {errorMessage && <p>{errorMessage}</p>}
         </form>
-      </div>
-    );
-  } else {
-    return (
-      <div className='signup-page-wrapper'>
-        <NoData />
       </div>
     );
   }
