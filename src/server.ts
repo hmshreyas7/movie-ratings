@@ -53,12 +53,13 @@ const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
   const listID = process.env.MAILCHIMP_LIST_ID!;
 
   const [fname, ...lname] = name ? name.split(' ') : [];
+  const combinedLname = lname.join(' ');
   const formattedBirthday = birthday.slice(-5).split('-').join('/');
 
   const mergeFields = name
     ? {
         FNAME: fname,
-        LNAME: lname,
+        LNAME: combinedLname,
         BIRTHDAY: formattedBirthday,
       }
     : {
