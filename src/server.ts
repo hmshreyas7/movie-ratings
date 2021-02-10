@@ -54,6 +54,58 @@ const movieSchema = new mongoose.Schema({
 
 const Movie = mongoose.model('Movie', movieSchema);
 
+const getMovieRatingInfo = (
+  userID: string,
+  movieID: string,
+  movieDetails: string
+) => {
+  return User.findOne(
+    {
+      _id: userID,
+    },
+    {
+      movieRatings: {
+        $elemMatch: {
+          movieID: movieID,
+        },
+      },
+    }
+  )
+    .then((response: any) => {
+      if (response && response.movieRatings.length === 1) {
+        const movieRating = response.movieRatings[0];
+
+        return Movie.findById(movieID).then((response) => {
+          if (response) {
+            return {
+              id: movieID,
+              title: response.get('title'),
+              poster: response.get('poster'),
+              genres: response.get('genres'),
+              rating: movieRating.rating,
+              timestamp: movieRating.timestamp,
+            } as MovieRatingInfo;
+          }
+        });
+      } else {
+        return {
+          id: movieID,
+        } as MovieRatingInfo;
+      }
+    })
+    .then((response): any => {
+      if (response) {
+        const movieInfo = response;
+
+        if (movieInfo.title) {
+          return Promise.resolve({ data: movieInfo });
+        }
+
+        return axios.get(movieDetails);
+      }
+    });
+};
+
 const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
   const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX!;
   const apiKey = process.env.MAILCHIMP_API_KEY!;
@@ -106,6 +158,60 @@ const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
 
 app.get('/', (req, res) => {
   res.send('Hello');
+});
+
+app.get('/movies/:userID', (req, res) => {
+  const tmdbAPI = 'https://api.themoviedb.org/3/movie';
+  const tmdbSearchAPI = 'https://api.themoviedb.org/3/search';
+  const omdbAPI = 'http://www.omdbapi.com';
+
+  const tmdbKey = process.env.TMDB_API_KEY;
+  const omdbKey = process.env.OMDB_API_KEY;
+
+  const { isSearch, searchQuery, regionCode } = req.query;
+
+  const tmdbMovies =
+    isSearch === 'true'
+      ? tmdbSearchAPI +
+        `/movie?api_key=${tmdbKey}&language=en-US&query=${searchQuery}&page=1&include_adult=false`
+      : tmdbAPI +
+        `/now_playing?api_key=${tmdbKey}&language=en-US&page=1&region=${regionCode}`;
+
+  const userID = req.params.userID;
+
+  axios
+    .get(tmdbMovies)
+    .then((response) => {
+      const movies: Array<TMDbMovie> = response.data.results;
+
+      Promise.all(
+        movies.map((movie: TMDbMovie) => {
+          const externalIDs =
+            tmdbAPI + `/${movie.id}/external_ids?api_key=${tmdbKey}`;
+          return axios
+            .get(externalIDs)
+            .then((response): any => {
+              const imdbID = response.data.imdb_id;
+              const movieDetails = omdbAPI + `/?i=${imdbID}&apikey=${omdbKey}`;
+
+              if (userID !== 'undefined') {
+                return getMovieRatingInfo(userID, imdbID, movieDetails);
+              } else {
+                return axios.get(movieDetails);
+              }
+            })
+            .then((response) => response.data)
+            .catch(() => {
+              return {};
+            });
+        })
+      ).then((response) => {
+        res.send(response);
+      });
+    })
+    .catch((err) => {
+      res.status(err.response.status).send('Data fetch failed');
+    });
 });
 
 app.post('/login', (req, res) => {
@@ -391,53 +497,6 @@ app.get('/movieratings/:userID', (req, res) => {
         });
     }
   });
-});
-
-app.get('/movieratings/:userID/:movieID', (req, res) => {
-  const { userID, movieID } = req.params;
-
-  User.findOne(
-    {
-      _id: userID,
-    },
-    {
-      movieRatings: {
-        $elemMatch: {
-          movieID: movieID,
-        },
-      },
-    },
-    (err, response: any) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (response && response.movieRatings.length === 1) {
-          const movieRating = response.movieRatings[0];
-
-          Movie.findById(movieID)
-            .then((response) => {
-              if (response) {
-                res.send({
-                  id: movieID,
-                  title: response.get('title'),
-                  poster: response.get('poster'),
-                  genres: response.get('genres'),
-                  rating: movieRating.rating,
-                  timestamp: movieRating.timestamp,
-                } as MovieRatingInfo);
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else {
-          res.send({
-            id: movieID,
-          });
-        }
-      }
-    }
-  );
 });
 
 app.get('/movie-rating-stats/:userID', (req, res) => {
