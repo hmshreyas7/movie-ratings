@@ -19,7 +19,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps) {
 
   const handleDelete = () => {
     axios
-      .delete(`http://localhost:5000/delete-rating/${user.uid}/${movieInfo.id}`)
+      .delete(`/delete-rating/${user.uid}/${movieInfo.id}`)
       .then((res) => {
         console.log(res.data);
         dispatch(updateRating(true));

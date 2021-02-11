@@ -35,7 +35,7 @@ function LoginPage() {
         history.push('/');
 
         axios
-          .post('http://localhost:5000/login', {
+          .post('/login', {
             _id: user.uid,
             name: user.displayName,
             email: user.email,

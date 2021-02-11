@@ -23,7 +23,7 @@ function SettingsPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/profile-info/${user.uid}`)
+      .get(`/profile-info/${user.uid}`)
       .then((res) => {
         setProfileInfo(res.data);
       })
@@ -102,7 +102,7 @@ function SettingsPage() {
     dispatch(loading(true));
 
     axios
-      .post('http://localhost:5000/profile-info', {
+      .post('/profile-info', {
         userID: user.uid,
         email: profileInfo.email,
         birthday: profileInfo.birthday,

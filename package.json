@@ -65,5 +65,8 @@
     "@types/react-redux": "^7.1.11",
     "@types/react-router-dom": "^5.1.6",
     "@types/react-select": "^3.0.28"
+  },
+  "engines": {
+    "node": "14.15.3"
   }
 }

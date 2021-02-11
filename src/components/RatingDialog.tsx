@@ -68,7 +68,7 @@ function RatingDialog(props: RatingDialogProps) {
       setRatingError(true);
     } else {
       axios
-        .post('http://localhost:5000/rate', {
+        .post('/rate', {
           userID: user.uid,
           movie: movieInfo,
           rating: rating,

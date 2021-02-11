@@ -22,7 +22,7 @@ function RatingStatsPage() {
   useEffect(() => {
     if (user.uid) {
       axios
-        .get(`http://localhost:5000/movie-rating-stats/${user.uid}`)
+        .get(`/movie-rating-stats/${user.uid}`)
         .then((res) => {
           setStats(res.data);
           dispatch(loading(false));

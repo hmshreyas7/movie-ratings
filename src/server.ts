@@ -4,16 +4,20 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config({ path: '../.env' });
+dotenv.config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 3000;
 const mongodb = {
   user: process.env.MONGODB_ATLAS_USERNAME,
   pass: process.env.MONGODB_ATLAS_PASSWORD,
 };
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+app.use(express.static(path.join(__dirname, '../build')));
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -155,10 +159,6 @@ const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
       console.log(err);
     });
 };
-
-app.get('/', (req, res) => {
-  res.send('Hello');
-});
 
 app.get('/movies/:userID', (req, res) => {
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
@@ -691,6 +691,10 @@ app.post('/profile-info', (req, res) => {
   );
 
   setMailchimpInfo(email, birthday);
+});
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
 app.listen(port, () => {
