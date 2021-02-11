@@ -3,13 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '../assets/default-user-avatar.png';
 import firebase from 'firebase/app';
 import 'firebase/storage';
-import dotenv from 'dotenv';
 import { useHistory } from 'react-router-dom';
 import { login } from '../actions';
-
-interface RootState {
-  user: firebase.User;
-}
+import axios from 'axios';
+import { RootState } from '../rootState';
 
 interface AvatarProps {
   onMenuToggle?: () => void;
@@ -17,10 +14,12 @@ interface AvatarProps {
 
 function Avatar(props: AvatarProps) {
   const user = useSelector((state: RootState) => state.user);
+  const isProfilePhotoUpdated = useSelector(
+    (state: RootState) => state.isProfilePhotoUpdated
+  );
   let history = useHistory();
   let dispatch = useDispatch();
   let [profilePhotoURL, setProfilePhotoURL] = useState();
-  let storageRef = firebase.storage().ref();
 
   useEffect(() => {
     let unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -35,16 +34,31 @@ function Avatar(props: AvatarProps) {
   }, [dispatch]);
 
   useEffect(() => {
-    let profilePhotoRef = storageRef.child(`${user.uid}/profile_photo.png`);
+    const storageRef = firebase.storage().ref();
+    const profilePhotoRef = storageRef.child(`${user.uid}/profile_photo.png`);
+
     profilePhotoRef
       .getDownloadURL()
       .then((url) => {
         setProfilePhotoURL(url);
       })
       .catch(() => {
-        setProfilePhotoURL(undefined);
+        if (user.photoURL?.includes('graph.facebook.com')) {
+          axios
+            .get(
+              `http://localhost:5000/facebook-photo?photoURL=${user.photoURL}`
+            )
+            .then((res) => {
+              setProfilePhotoURL(res.data);
+            })
+            .catch((err) => {
+              console.log(err.response.data);
+            });
+        } else {
+          setProfilePhotoURL(undefined);
+        }
       });
-  }, [storageRef, user.uid]);
+  }, [user.photoURL, user.uid, isProfilePhotoUpdated]);
 
   const setAvatarImage = () => {
     const photoURL = user.photoURL;
@@ -53,13 +67,7 @@ function Avatar(props: AvatarProps) {
       return defaultAvatar;
     }
 
-    if (photoURL.includes('graph.facebook.com')) {
-      dotenv.config();
-      const accessToken = process.env.REACT_APP_FACEBOOK_ACCESS_TOKEN;
-      return photoURL + `?access_token=${accessToken}`;
-    } else {
-      return photoURL;
-    }
+    return photoURL;
   };
 
   const handleMenuToggle = props.onMenuToggle;

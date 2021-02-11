@@ -4,7 +4,7 @@ import 'firebase/storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../rootState';
 import { CircularProgress } from '@material-ui/core';
-import { loading } from '../actions';
+import { loading, updateProfilePhoto } from '../actions';
 import NoData from './NoData';
 import axios from 'axios';
 
@@ -54,6 +54,7 @@ function SettingsPage() {
         .then(() => {
           console.log('Upload success!');
           setProfilePhoto(undefined);
+          dispatch(updateProfilePhoto());
 
           if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -75,6 +76,7 @@ function SettingsPage() {
       .delete()
       .then(() => {
         console.log('Delete success!');
+        dispatch(updateProfilePhoto());
       })
       .catch((err) => {
         console.log(err);

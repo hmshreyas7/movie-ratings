@@ -13,6 +13,12 @@ export const logout = () => {
   };
 };
 
+export const updateProfilePhoto = () => {
+  return {
+    type: 'UPDATE_PROFILE_PHOTO',
+  };
+};
+
 export const search = (query: string) => {
   return {
     type: 'SEARCH',

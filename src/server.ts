@@ -261,6 +261,20 @@ app.post('/login', (req, res) => {
     });
 });
 
+app.get('/facebook-photo', (req, res) => {
+  const photoURL = req.query.photoURL;
+  const accessToken = process.env.FACEBOOK_ACCESS_TOKEN;
+
+  axios
+    .get(`${photoURL}?width=1000&access_token=${accessToken}&redirect=false`)
+    .then((response) => {
+      res.send(response.data.data.url);
+    })
+    .catch((err) => {
+      res.status(err.response.status).send('Facebook photo fetch failed');
+    });
+});
+
 app.post('/rate', (req, res) => {
   const { userID, movie, rating, timestamp } = req.body;
   const isOMDbMovie = 'imdbID' in movie;
