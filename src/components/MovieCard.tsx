@@ -69,22 +69,24 @@ function MovieCard(props: MovieCardProps) {
 
   const getTimestamp = () => {
     if (timestamp) {
-      const customTimestamp = new Date(timestamp).toLocaleString([], {
-        year: 'numeric',
+      const timestampDate = new Date(timestamp);
+      const currentDate = new Date();
+
+      const timestampYear = timestampDate.getFullYear();
+      const currentYear = currentDate.getFullYear();
+
+      const formattedDate = timestampDate.toLocaleDateString('en-US', {
+        year: timestampYear !== currentYear ? 'numeric' : undefined,
         month: 'short',
         day: 'numeric',
+      });
+      const formattedTime = timestampDate.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true,
       });
-      const [date, year, time] = customTimestamp.split(', ');
 
-      const currentYear = new Date().getFullYear().toString();
-      let formattedTimestamp = date;
-      formattedTimestamp += year === currentYear ? '' : `, ${year}`;
-      formattedTimestamp += ` - ${time}`;
-
-      return formattedTimestamp;
+      return `${formattedDate} - ${formattedTime}`;
     } else {
       return null;
     }
