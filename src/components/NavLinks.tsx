@@ -41,7 +41,7 @@ function NavLinks(props: NavLinksProps) {
           </span>
         )}
       </li>
-      <li>
+      <li onClick={handleMenuToggle}>
         <Link
           className='nav-link'
           style={{ color: match?.url === '/settings' ? '#EF564D' : '' }}
