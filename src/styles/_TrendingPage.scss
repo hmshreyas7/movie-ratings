@@ -1,0 +1,43 @@
+.trending-page-wrapper {
+  bottom: 0;
+  color: $on-primary-color;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-normal;
+  left: 240px;
+  margin: $spacing-normal;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.trending-movies-wrapper {
+  background-color: $on-primary-color;
+  border-radius: 8px;
+  color: $primary-color;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.trending-movies-wrapper table {
+  height: 100%;
+  padding: $spacing-normal;
+}
+
+.trending-movies-wrapper th,
+.trending-movies-wrapper td {
+  font-family: 'Open Sans', sans-serif;
+  padding: $spacing-small;
+  text-align: center;
+}
+
+.trending-movies-wrapper th:last-child,
+.trending-movies-wrapper td:last-child {
+  width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .trending-page-wrapper {
+    position: unset;
+  }
+}

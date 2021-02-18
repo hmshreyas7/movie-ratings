@@ -13,7 +13,7 @@ interface NavLinksProps {
 }
 
 function NavLinks(props: NavLinksProps) {
-  const match = useRouteMatch('/(login|settings)');
+  const match = useRouteMatch('/(login|settings|trending)');
   let user = useSelector((state: RootState) => state.user);
   let dispatch = useDispatch();
 
@@ -26,6 +26,15 @@ function NavLinks(props: NavLinksProps) {
 
   return (
     <ul className='nav-links-list'>
+      <li onClick={handleMenuToggle}>
+        <Link
+          className='nav-link'
+          style={{ color: match?.url === '/trending' ? '#EF564D' : '' }}
+          to='/trending'
+        >
+          Trending
+        </Link>
+      </li>
       <li onClick={handleMenuToggle}>
         {!user.uid ? (
           <Link

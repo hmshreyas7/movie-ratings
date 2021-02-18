@@ -8,6 +8,7 @@ import RatingStatsPage from './components/RatingStatsPage';
 import SettingsPage from './components/SettingsPage';
 import SideNav from './components/SideNav';
 import SignUpPage from './components/SignUpPage';
+import TrendingPage from './components/TrendingPage';
 import UserPage from './components/UserPage';
 
 function App() {
@@ -26,6 +27,9 @@ function App() {
         </Route>
         <Route path='/settings'>
           <SettingsPage />
+        </Route>
+        <Route path='/trending'>
+          <TrendingPage />
         </Route>
         <Route path='/movie/:id'>
           <MoviePage />

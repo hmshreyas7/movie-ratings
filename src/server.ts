@@ -35,6 +35,12 @@ type MovieRating = Readonly<{
   timestamp: string;
 }>;
 
+type UserRating = Readonly<{
+  userID: string;
+  rating: number;
+  timestamp: string;
+}>;
+
 const userSchema = new mongoose.Schema({
   _id: String,
   name: String,
@@ -54,6 +60,9 @@ const movieSchema = new mongoose.Schema({
   genres: String,
   runtime: String,
   releaseDate: String,
+  imdbRating: String,
+  imdbVotes: String,
+  ratedBy: Array<UserRating>(),
 });
 
 const Movie = mongoose.model('Movie', movieSchema);
@@ -158,6 +167,26 @@ const setMailchimpInfo = (email: string, birthday: string, name?: string) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+const recentTimestampCount = (timestamps: string[], isPrevious?: boolean) => {
+  let timeDiff = 7 * 24 * 60 * 60 * 1000;
+  const lastDate = new Date((new Date() as any) - timeDiff);
+  const prevLastDate = new Date((new Date() as any) - timeDiff * 2);
+  let count = 0;
+
+  timestamps.forEach((timestamp) => {
+    const timestampDate = new Date(timestamp);
+    const withinDateRange = isPrevious
+      ? timestampDate >= prevLastDate && timestampDate < lastDate
+      : timestampDate >= lastDate;
+
+    if (withinDateRange) {
+      count++;
+    }
+  });
+
+  return count;
 };
 
 app.get('/movies/:userID', (req, res) => {
@@ -283,6 +312,11 @@ app.post('/rate', (req, res) => {
     rating: rating,
     timestamp: timestamp,
   };
+  const userRating: UserRating = {
+    userID: userID,
+    rating: rating,
+    timestamp: timestamp,
+  };
 
   Movie.exists({ _id: movieRating.movieID })
     .then((movieExists) => {
@@ -294,6 +328,9 @@ app.post('/rate', (req, res) => {
           genres: movie.Genre,
           runtime: movie.Runtime,
           releaseDate: movie.Released,
+          imdbRating: movie.imdbRating,
+          imdbVotes: movie.imdbVotes,
+          ratedBy: [],
         });
         newMovie.save();
       }
@@ -316,7 +353,23 @@ app.post('/rate', (req, res) => {
         if (err) {
           console.log(err);
         } else {
-          res.send('Rating received');
+          Movie.updateOne(
+            {
+              _id: movieRating.movieID,
+            },
+            {
+              $push: {
+                ratedBy: userRating,
+              },
+            },
+            (err, response) => {
+              if (err) {
+                console.log(err);
+              } else {
+                res.send('Rating received');
+              }
+            }
+          );
         }
       }
     );
@@ -335,7 +388,24 @@ app.post('/rate', (req, res) => {
         if (err) {
           console.log(err);
         } else {
-          res.send('Rating updated');
+          Movie.updateOne(
+            {
+              _id: movieRating.movieID,
+              'ratedBy.userID': userID,
+            },
+            {
+              $set: {
+                'ratedBy.$.rating': movieRating.rating,
+              },
+            },
+            (err, response) => {
+              if (err) {
+                console.log(err);
+              } else {
+                res.send('Rating updated');
+              }
+            }
+          );
         }
       }
     );
@@ -360,7 +430,25 @@ app.delete('/delete-rating/:userID/:movieID', (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        res.send('Rating deleted');
+        Movie.updateOne(
+          {
+            _id: movieID,
+          },
+          {
+            $pull: {
+              ratedBy: {
+                userID: userID,
+              },
+            },
+          },
+          (err, response) => {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send('Rating deleted');
+            }
+          }
+        );
       }
     }
   );
@@ -691,6 +779,85 @@ app.post('/profile-info', (req, res) => {
   );
 
   setMailchimpInfo(email, birthday);
+});
+
+app.get('/trending-movies', (req, res) => {
+  Movie.aggregate([
+    {
+      $addFields: {
+        numUsers: {
+          $size: '$ratedBy',
+        },
+        timestamps: {
+          $map: {
+            input: '$ratedBy',
+            as: 'userRating',
+            in: '$$userRating.timestamp',
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        imdbVotes: 1,
+        numUsers: 1,
+        timestamps: 1,
+      },
+    },
+  ])
+    .exec()
+    .then((response: []) => {
+      const trendingData = response
+        .map((doc: any) => {
+          const imdbVotes = Number(doc.imdbVotes.replace(',', ''));
+          const numRecentUsers = recentTimestampCount(doc.timestamps);
+          const numRecentUsersPrev = recentTimestampCount(doc.timestamps, true);
+
+          return {
+            _id: doc._id,
+            title: doc.title,
+            imdbVotes: isNaN(imdbVotes) ? 0 : imdbVotes,
+            numUsers: doc.numUsers,
+            numRecentUsers: numRecentUsers,
+            numRecentUsersPrev: numRecentUsersPrev,
+          };
+        })
+        .sort(
+          (a, b) =>
+            b.numRecentUsersPrev - a.numRecentUsersPrev ||
+            b.numUsers - a.numUsers ||
+            b.imdbVotes - a.imdbVotes ||
+            a.title.localeCompare(b.title) ||
+            a._id.localeCompare(b._id)
+        )
+        .map((movie, index) => {
+          return {
+            prevRank: index + 1,
+            ...movie,
+          };
+        })
+        .sort(
+          (a, b) =>
+            b.numRecentUsers - a.numRecentUsers ||
+            b.numUsers - a.numUsers ||
+            b.imdbVotes - a.imdbVotes ||
+            a.title.localeCompare(b.title) ||
+            a._id.localeCompare(b._id)
+        )
+        .map((movie, index) => {
+          return {
+            rank: index + 1,
+            ...movie,
+          };
+        });
+
+      res.send(trendingData.slice(0, 10));
+    })
+    .catch((err: any) => {
+      res.status(err.response.status).send('Aggregation failed');
+    });
 });
 
 app.get('/*', (req, res) => {
