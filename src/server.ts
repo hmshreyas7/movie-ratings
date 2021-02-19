@@ -827,7 +827,7 @@ app.get('/trending-movies', (req, res) => {
         .sort(
           (a, b) =>
             b.numRecentUsersPrev - a.numRecentUsersPrev ||
-            b.numUsers - a.numUsers ||
+            b.numUsers - b.numRecentUsers - (a.numUsers - a.numRecentUsers) ||
             b.imdbVotes - a.imdbVotes ||
             a.title.localeCompare(b.title) ||
             a._id.localeCompare(b._id)
