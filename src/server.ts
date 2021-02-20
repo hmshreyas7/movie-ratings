@@ -695,7 +695,7 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
                       temp.reduce((val, acc) => acc + val) / temp.length
                     ).toFixed(2)
                   : '0.00',
-                `(${temp.length})`,
+                `${temp.length}`,
               ];
             }
 
@@ -703,7 +703,7 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
               const temp = ratingsByGenre[genre];
               favoriteGenres[genre] = [
                 (temp.reduce((val, acc) => acc + val) / temp.length).toFixed(2),
-                `(${temp.length})`,
+                `${temp.length}`,
               ];
             }
 
@@ -711,7 +711,7 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
               const temp = ratingsByDecade[decade];
               avgRatingsByDecade[decade] = [
                 (temp.reduce((val, acc) => acc + val) / temp.length).toFixed(2),
-                `(${temp.length})`,
+                `${temp.length}`,
               ];
             }
 

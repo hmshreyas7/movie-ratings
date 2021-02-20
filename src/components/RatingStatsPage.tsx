@@ -1,9 +1,10 @@
 import { CircularProgress } from '@material-ui/core';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loading } from '../actions';
 import { RootState } from '../rootState';
+import BottomNav from './BottomNav';
 import NoData from './NoData';
 
 function RatingStatsPage() {
@@ -17,7 +18,9 @@ function RatingStatsPage() {
     avgRatingsByDecade: [],
   });
   let [hasRatings, setHasRatings] = useState(true);
+  let [selectedTab, setSelectedTab] = useState(0);
   let dispatch = useDispatch();
+  let bottomNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user.uid) {
@@ -53,7 +56,7 @@ function RatingStatsPage() {
           stats.totalRatings > 0 ? (100 * rating[1]) / stats.totalRatings : 0;
 
         return (
-          <div className='rating-row'>
+          <div key={rating[0]} className='rating-row'>
             <div>{rating[0]}</div>
             <div className='rating-bar-wrapper'>
               <div
@@ -69,42 +72,138 @@ function RatingStatsPage() {
       });
   };
 
+  const sortTable = (
+    ratingGroupTitle: string,
+    ratingGroupArray: [string, string[]][],
+    sortByIndex?: number
+  ) => {
+    const arrayToBeSorted = (() => {
+      switch (ratingGroupTitle) {
+        case 'Runtime':
+          return 'avgRatingsByRuntime';
+        case 'Genre':
+          return 'favoriteGenres';
+        case 'Decade':
+          return 'avgRatingsByDecade';
+        default:
+          return '';
+      }
+    })();
+
+    const sortedArray = (() => {
+      let result = [];
+
+      if (ratingGroupTitle === 'Runtime') {
+        const runtimeIntervals = [
+          '< 60 min',
+          '60-89 min',
+          '90-119 min',
+          '120-149 min',
+          '150-179 min',
+          '180+ min',
+        ];
+
+        result = [...ratingGroupArray].sort(
+          (a, b) =>
+            runtimeIntervals.indexOf(a[0]) - runtimeIntervals.indexOf(b[0])
+        );
+      } else {
+        result = [...ratingGroupArray].sort((a, b) => a[0].localeCompare(b[0]));
+      }
+
+      if (sortByIndex !== undefined) {
+        result.sort(
+          (a, b) => Number(b[1][sortByIndex]) - Number(a[1][sortByIndex])
+        );
+      }
+
+      return result;
+    })();
+
+    setStats((prevStats) => {
+      return {
+        ...prevStats,
+        [arrayToBeSorted]: sortedArray,
+      };
+    });
+  };
+
   const buildRatingStatsTable = (
     ratingGroupTitle: string,
-    ratingGroupArray: [string, string][]
+    ratingGroupArray: [string, string[]][]
   ) => {
     return (
       <>
         <h2>Ratings by {ratingGroupTitle}</h2>
-        <div className='rating-stats-table'>
-          <div className='rating-stats-column'>
-            {ratingGroupArray.map((ratingGroup) => (
-              <div
-                style={
-                  ratingGroupTitle === 'Genre' ? { textAlign: 'left' } : {}
-                }
+        <table className='rating-stats-table'>
+          <thead>
+            <tr>
+              <th onClick={() => sortTable(ratingGroupTitle, ratingGroupArray)}>
+                {ratingGroupTitle}
+              </th>
+              <th
+                onClick={() => sortTable(ratingGroupTitle, ratingGroupArray, 1)}
               >
-                {ratingGroup[0]}
-              </div>
-            ))}
-          </div>
-          <div className='rating-stats-column'>
+                Count
+              </th>
+              <th
+                onClick={() => sortTable(ratingGroupTitle, ratingGroupArray, 0)}
+              >
+                Average
+              </th>
+            </tr>
+          </thead>
+          <tbody>
             {ratingGroupArray.map((ratingGroup) => (
-              <div>{ratingGroup[1][0]}</div>
+              <tr key={ratingGroup[0]}>
+                <td
+                  style={
+                    ratingGroupTitle === 'Genre' ? { textAlign: 'left' } : {}
+                  }
+                >
+                  {ratingGroup[0]}
+                </td>
+                <td>{ratingGroup[1][1]}</td>
+                <td>{ratingGroup[1][0]}</td>
+              </tr>
             ))}
-          </div>
-          <div className='rating-stats-column'>
-            {ratingGroupArray.map((ratingGroup) => (
-              <div>{ratingGroup[1][1]}</div>
-            ))}
-          </div>
-        </div>
+          </tbody>
+        </table>
       </>
     );
   };
 
+  const displayTabContent = (index: number) => {
+    switch (index) {
+      case 0:
+        return (
+          <div className='rating-distribution'>
+            <h2>Rating Distribution</h2>
+            {getRatingDistribution()}
+          </div>
+        );
+      case 1:
+        return buildRatingStatsTable('Runtime', stats.avgRatingsByRuntime);
+      case 2:
+        return buildRatingStatsTable('Genre', stats.favoriteGenres);
+      case 3:
+        return buildRatingStatsTable('Decade', stats.avgRatingsByDecade);
+    }
+  };
+
+  const onTabChange = (tabIndex: number) => {
+    setSelectedTab(tabIndex);
+  };
+
   return (
-    <div className='rating-stats-page-wrapper'>
+    <div
+      className='rating-stats-page-wrapper'
+      style={
+        bottomNavRef.current
+          ? { marginBottom: `${bottomNavRef.current.offsetHeight}px` }
+          : {}
+      }
+    >
       {isLoading && (
         <div className='loading-indicator'>
           <CircularProgress color='inherit' />
@@ -112,13 +211,12 @@ function RatingStatsPage() {
       )}
       {hasRatings ? (
         <>
-          <div className='rating-distribution'>
-            <h2>Rating Distribution</h2>
-            {getRatingDistribution()}
-          </div>
-          {buildRatingStatsTable('Runtime', stats.avgRatingsByRuntime)}
-          {buildRatingStatsTable('Genre', stats.favoriteGenres)}
-          {buildRatingStatsTable('Decade', stats.avgRatingsByDecade)}
+          {displayTabContent(selectedTab)}
+          <BottomNav
+            ref={bottomNavRef}
+            selectedTab={selectedTab}
+            onTabChange={onTabChange}
+          />
         </>
       ) : (
         <NoData />

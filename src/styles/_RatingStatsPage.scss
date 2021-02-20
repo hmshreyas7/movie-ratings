@@ -1,9 +1,11 @@
 .rating-stats-page-wrapper {
+  align-items: center;
   bottom: 0;
   color: $on-primary-color;
   display: flex;
   flex-direction: column;
   gap: $spacing-normal;
+  justify-content: center;
   left: 240px;
   margin: $spacing-normal;
   position: absolute;
@@ -15,6 +17,7 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-small;
+  text-align: center;
   width: 100%;
 }
 
@@ -22,6 +25,8 @@
   align-items: center;
   display: flex;
   gap: $spacing-small;
+  margin-left: 50%;
+  transform: translate(-50%);
 }
 
 .rating-row div:first-child {
@@ -40,31 +45,25 @@
   height: $spacing-large;
 }
 
-.rating-stats-table {
-  display: flex;
-  gap: $spacing-small;
-  text-align: right;
-  width: 300px;
-}
-
-.rating-stats-column div {
+.rating-stats-table th,
+.rating-stats-table td {
   font-family: 'Open Sans', sans-serif;
 }
 
-.rating-stats-column:nth-child(2) {
-  flex: 1;
+.rating-stats-table th {
+  background-color: $on-primary-color;
+  color: $primary-color;
+  cursor: pointer;
+  padding: 0 $spacing-normal;
 }
 
-.rating-stats-column:last-child {
+.rating-stats-table td {
+  padding: 0 $spacing-small;
   text-align: center;
 }
 
 @media only screen and (max-width: 600px) {
   .rating-stats-page-wrapper {
     position: unset;
-  }
-
-  .rating-stats-table {
-    width: 100%;
   }
 }
