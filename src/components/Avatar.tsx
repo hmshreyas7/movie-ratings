@@ -34,28 +34,32 @@ function Avatar(props: AvatarProps) {
   }, [dispatch]);
 
   useEffect(() => {
-    const storageRef = firebase.storage().ref();
-    const profilePhotoRef = storageRef.child(`${user.uid}/profile_photo.png`);
+    if (user.uid) {
+      const storageRef = firebase.storage().ref();
+      const profilePhotoRef = storageRef.child(`${user.uid}/profile_photo.png`);
 
-    profilePhotoRef
-      .getDownloadURL()
-      .then((url) => {
-        setProfilePhotoURL(url);
-      })
-      .catch(() => {
-        if (user.photoURL?.includes('graph.facebook.com')) {
-          axios
-            .get(`/facebook-photo?photoURL=${user.photoURL}`)
-            .then((res) => {
-              setProfilePhotoURL(res.data);
-            })
-            .catch((err) => {
-              console.log(err.response.data);
-            });
-        } else {
-          setProfilePhotoURL(undefined);
-        }
-      });
+      profilePhotoRef
+        .getDownloadURL()
+        .then((url) => {
+          setProfilePhotoURL(url);
+        })
+        .catch(() => {
+          if (user.photoURL?.includes('graph.facebook.com')) {
+            axios
+              .get(`/facebook-photo?photoURL=${user.photoURL}`)
+              .then((res) => {
+                setProfilePhotoURL(res.data);
+              })
+              .catch((err) => {
+                console.log(err.response.data);
+              });
+          } else {
+            setProfilePhotoURL(undefined);
+          }
+        });
+    } else {
+      setProfilePhotoURL(undefined);
+    }
   }, [user.photoURL, user.uid, isProfilePhotoUpdated]);
 
   const setAvatarImage = () => {
