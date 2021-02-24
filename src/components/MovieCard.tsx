@@ -53,10 +53,12 @@ function MovieCard(props: MovieCardProps) {
       dispatch(viewMovieDetails(movieInfo));
 
       if (posterRef.current) {
+        const posterPosition = posterRef.current.getBoundingClientRect();
+
         dispatch(
           setMoviePosterPosition({
-            x: posterRef.current.x,
-            y: posterRef.current.y,
+            x: posterPosition.x,
+            y: posterPosition.y,
           })
         );
       }
