@@ -67,8 +67,8 @@ function TrendingPage() {
         <table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>+/-</th>
+              <th title='Rank'>#</th>
+              <th title='Change in rank from last week'>+/-</th>
               <th>Title</th>
             </tr>
           </thead>

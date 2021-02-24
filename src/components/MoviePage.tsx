@@ -122,7 +122,11 @@ function MoviePage() {
                 <img src={imdbLogo} alt='IMDb' />
               </a>
             </div>
-            <div className='movie-page-icon-action' onClick={handleAdd}>
+            <div
+              className='movie-page-icon-action'
+              onClick={handleAdd}
+              title='Add'
+            >
               <Add />
             </div>
           </div>
@@ -137,35 +141,41 @@ function MoviePage() {
             </div>
             <div className='movie-page-info-extra'>
               <p>
-                <div className='movie-page-icon'>
+                <div className='movie-page-icon' title='Genres'>
                   <MovieFilter />
                 </div>
                 {movieInfo.Genre}
               </p>
               <div className='movie-page-stats'>
                 <p>
-                  <div className='movie-page-icon'>
+                  <div className='movie-page-icon' title='Runtime'>
                     <Schedule />
                   </div>
                   {movieInfo.Runtime}
                 </p>
                 {parseInt(movieInfo.imdbVotes) > 0 ? (
                   <p>
-                    <div className='movie-page-icon'>
+                    <div
+                      className='movie-page-icon'
+                      title='IMDb rating & votes'
+                    >
                       <Grade />
                     </div>
                     {movieInfo.imdbRating} ({movieInfo.imdbVotes})
                   </p>
                 ) : (
                   <p>
-                    <div className='movie-page-icon'>
+                    <div
+                      className='movie-page-icon'
+                      title='IMDb rating & votes'
+                    >
                       <Grade />
                     </div>
                     N/A (N/A)
                   </p>
                 )}
                 <p>
-                  <div className='movie-page-icon'>
+                  <div className='movie-page-icon' title='Release date'>
                     <CalendarToday />
                   </div>
                   {movieInfo.Released}

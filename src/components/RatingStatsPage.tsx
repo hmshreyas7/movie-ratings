@@ -143,11 +143,13 @@ function RatingStatsPage() {
               </th>
               <th
                 onClick={() => sortTable(ratingGroupTitle, ratingGroupArray, 1)}
+                title='Number of ratings'
               >
                 Count
               </th>
               <th
                 onClick={() => sortTable(ratingGroupTitle, ratingGroupArray, 0)}
+                title='Average rating'
               >
                 Average
               </th>

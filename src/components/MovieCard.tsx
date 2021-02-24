@@ -97,7 +97,9 @@ function MovieCard(props: MovieCardProps) {
   return (
     <div className='movie-card-wrapper'>
       {timestamp && (
-        <div className='movie-card-timestamp'>{getTimestamp()}</div>
+        <div className='movie-card-timestamp' title='Added on'>
+          {getTimestamp()}
+        </div>
       )}
       <div className='movie-card-poster'>
         <img src={poster} alt={title} ref={posterRef} />
