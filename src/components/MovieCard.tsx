@@ -48,20 +48,18 @@ function MovieCard(props: MovieCardProps) {
   };
 
   const handleView = () => {
-    if ('imdbID' in movieInfo) {
-      history.push(`/movie/${id}`);
-      dispatch(viewMovieDetails(movieInfo));
+    history.push(`/movie/${id}`);
+    dispatch(viewMovieDetails(movieInfo));
 
-      if (posterRef.current) {
-        const posterPosition = posterRef.current.getBoundingClientRect();
+    if (posterRef.current) {
+      const posterPosition = posterRef.current.getBoundingClientRect();
 
-        dispatch(
-          setMoviePosterPosition({
-            x: posterPosition.x,
-            y: posterPosition.y,
-          })
-        );
-      }
+      dispatch(
+        setMoviePosterPosition({
+          x: posterPosition.x,
+          y: posterPosition.y,
+        })
+      );
     }
   };
 
@@ -119,11 +117,10 @@ function MovieCard(props: MovieCardProps) {
           <button onClick={handleRate}>
             {'imdbID' in movieInfo ? 'Add' : 'Edit'}
           </button>
-          {'imdbID' in movieInfo ? (
-            <button onClick={handleView}>View</button>
-          ) : (
+          {!('imdbID' in movieInfo) && (
             <button onClick={handleDelete}>Delete</button>
           )}
+          <button onClick={handleView}>View</button>
         </div>
       </div>
       <div className='movie-card-info'>

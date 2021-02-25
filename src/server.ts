@@ -62,6 +62,8 @@ const movieSchema = new mongoose.Schema({
   releaseDate: String,
   imdbRating: String,
   imdbVotes: String,
+  year: String,
+  plot: String,
   ratedBy: Array<UserRating>(),
 });
 
@@ -95,6 +97,12 @@ const getMovieRatingInfo = (
               title: response.get('title'),
               poster: response.get('poster'),
               genres: response.get('genres'),
+              runtime: response.get('runtime'),
+              releaseDate: response.get('releaseDate'),
+              imdbRating: response.get('imdbRating'),
+              imdbVotes: response.get('imdbVotes'),
+              year: response.get('year'),
+              plot: response.get('plot'),
               rating: movieRating.rating,
               timestamp: movieRating.timestamp,
             } as MovieRatingInfo;
@@ -581,6 +589,12 @@ app.get('/movieratings/:userID', (req, res) => {
                   title: response.get('title'),
                   poster: response.get('poster'),
                   genres: response.get('genres'),
+                  runtime: response.get('runtime'),
+                  releaseDate: response.get('releaseDate'),
+                  imdbRating: response.get('imdbRating'),
+                  imdbVotes: response.get('imdbVotes'),
+                  year: response.get('year'),
+                  plot: response.get('plot'),
                   rating: movieRating.rating,
                   timestamp: movieRating.timestamp,
                 } as MovieRatingInfo;

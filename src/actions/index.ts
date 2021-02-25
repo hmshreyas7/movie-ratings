@@ -26,7 +26,7 @@ export const search = (query: string) => {
   };
 };
 
-export const viewMovieDetails = (movie: OMDbMovie) => {
+export const viewMovieDetails = (movie: OMDbMovie | MovieRatingInfo) => {
   return {
     type: 'VIEW_MOVIE_DETAILS',
     payload: movie,

@@ -1,6 +1,7 @@
 import {
   Add,
   CalendarToday,
+  Edit,
   Grade,
   MovieFilter,
   Schedule,
@@ -19,6 +20,32 @@ function MoviePage() {
     (state: RootState) => state.posterPosition
   );
   const user = useSelector((state: RootState) => state.user);
+  const {
+    id,
+    poster,
+    title,
+    genres,
+    runtime,
+    releaseDate,
+    imdbRating,
+    imdbVotes,
+    year,
+    plot,
+  } =
+    'imdbID' in movieInfo
+      ? {
+          id: movieInfo.imdbID,
+          poster: movieInfo.Poster,
+          title: movieInfo.Title,
+          genres: movieInfo.Genre,
+          runtime: movieInfo.Runtime,
+          releaseDate: movieInfo.Released,
+          imdbRating: movieInfo.imdbRating,
+          imdbVotes: movieInfo.imdbVotes,
+          year: movieInfo.Year,
+          plot: movieInfo.Plot,
+        }
+      : movieInfo;
 
   let history = useHistory();
   let [isDialogOpen, setDialogOpen] = useState(false);
@@ -104,10 +131,10 @@ function MoviePage() {
       style={pageWrapperStyle}
       ref={pageWrapperRef}
     >
-      {movieInfo.imdbID ? (
+      {id ? (
         <>
           <div className='movie-page-header'>
-            <h1>{`${movieInfo.Title} (${movieInfo.Year})`}</h1>
+            <h1>{`${title} (${year})`}</h1>
             <RatingDialog
               isOpen={isDialogOpen}
               onClose={handleDialogClose}
@@ -115,7 +142,7 @@ function MoviePage() {
             />
             <div className='movie-page-external-link' title='View on IMDb'>
               <a
-                href={`https://www.imdb.com/title/${movieInfo.imdbID}`}
+                href={`https://www.imdb.com/title/${id}`}
                 target='_blank'
                 rel='noreferrer'
               >
@@ -125,16 +152,16 @@ function MoviePage() {
             <div
               className='movie-page-icon-action'
               onClick={handleAdd}
-              title='Add'
+              title={'imdbID' in movieInfo ? 'Add' : 'Edit'}
             >
-              <Add />
+              {'imdbID' in movieInfo ? <Add /> : <Edit />}
             </div>
           </div>
           <div className='movie-page-info'>
             <div className='movie-page-info-poster' style={posterParentStyle}>
               <img
-                src={movieInfo.Poster}
-                alt={movieInfo.Title}
+                src={poster}
+                alt={title}
                 style={posterChildStyle}
                 ref={posterRef}
               />
@@ -144,16 +171,16 @@ function MoviePage() {
                 <div className='movie-page-icon' title='Genres'>
                   <MovieFilter />
                 </div>
-                {movieInfo.Genre}
+                {genres}
               </p>
               <div className='movie-page-stats'>
                 <p>
                   <div className='movie-page-icon' title='Runtime'>
                     <Schedule />
                   </div>
-                  {movieInfo.Runtime}
+                  {runtime}
                 </p>
-                {parseInt(movieInfo.imdbVotes) > 0 ? (
+                {parseInt(imdbVotes) > 0 ? (
                   <p>
                     <div
                       className='movie-page-icon'
@@ -161,7 +188,7 @@ function MoviePage() {
                     >
                       <Grade />
                     </div>
-                    {movieInfo.imdbRating} ({movieInfo.imdbVotes})
+                    {imdbRating} ({imdbVotes})
                   </p>
                 ) : (
                   <p>
@@ -178,10 +205,10 @@ function MoviePage() {
                   <div className='movie-page-icon' title='Release date'>
                     <CalendarToday />
                   </div>
-                  {movieInfo.Released}
+                  {releaseDate}
                 </p>
               </div>
-              <p>{movieInfo.Plot}</p>
+              <p>{plot}</p>
             </div>
           </div>
         </>
