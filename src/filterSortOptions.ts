@@ -1,3 +1,12 @@
+export const runtimes = [
+  { value: '< 60', label: '< 60 min' },
+  { value: '60-89', label: '60-89 min' },
+  { value: '90-119', label: '90-119 min' },
+  { value: '120-149', label: '120-149 min' },
+  { value: '150-179', label: '150-179 min' },
+  { value: '180+', label: '180+ min' },
+];
+
 export const genres = [
   { value: 'action', label: 'Action' },
   { value: 'adventure', label: 'Adventure' },
@@ -25,4 +34,5 @@ export const genres = [
 export const sorts = [
   { value: 'alpha', label: 'Alphabetical' },
   { value: 'rating', label: 'Rating' },
+  { value: 'release', label: 'Release Date' },
 ];

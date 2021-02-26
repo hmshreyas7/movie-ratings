@@ -15,13 +15,19 @@
   align-items: center;
   color: $dropdown-text-color;
   display: flex;
+  flex-wrap: wrap;
   gap: $spacing-normal;
   margin: $spacing-normal;
   padding: 0 25px;
 }
 
 .filter-sort > div {
-  flex: 1;
+  flex-grow: 1;
+  min-width: 10rem;
+}
+
+.filter-sort div {
+  font-family: 'Open Sans', sans-serif;
 }
 
 .rating-page-info-wrapper {

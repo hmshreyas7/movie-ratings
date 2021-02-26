@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { genres, sorts } from '../filterSortOptions';
+import { genres, runtimes, sorts } from '../filterSortOptions';
 import { RootState } from '../rootState';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom';
@@ -23,7 +23,9 @@ function RatingPage() {
   );
   let [movies, setMovies] = useState<Array<MovieRatingInfo>>([]);
   let [filterSort, setFilterSort] = useState({
+    runtimeFilter: [] as SelectedOption[],
     genreFilter: [] as SelectedOption[],
+    decadeFilter: [] as SelectedOption[],
     sortSetting: {} as SelectedOption,
   });
   let [ratingCount, setRatingCount] = useState(0);
@@ -43,8 +45,52 @@ function RatingPage() {
     });
   };
 
+  const getDecades = () =>
+    [
+      ...new Set(
+        [...movies].map((ratingInfo) => `${ratingInfo.year.slice(0, 3)}0s`)
+      ),
+    ]
+      .sort((a, b) => a.localeCompare(b))
+      .map((decade) => {
+        return {
+          value: decade,
+          label: decade,
+        };
+      });
+
   const getMovies = () => {
     let filteredMovies = [...movies].filter((ratingInfo) => {
+      const runtime = parseInt(ratingInfo.runtime.slice(0, -4));
+      let runtimeInterval = '';
+
+      if (runtime < 60) {
+        runtimeInterval = '< 60 min';
+      } else if (runtime < 90) {
+        runtimeInterval = '60-89 min';
+      } else if (runtime < 120) {
+        runtimeInterval = '90-119 min';
+      } else if (runtime < 150) {
+        runtimeInterval = '120-149 min';
+      } else if (runtime < 180) {
+        runtimeInterval = '150-179 min';
+      } else {
+        runtimeInterval = '180+ min';
+      }
+
+      const runtimeFilterLabels = filterSort.runtimeFilter?.map(
+        (runtime) => runtime.label
+      );
+      let isWithinRuntimeInterval = true;
+
+      if (
+        runtimeFilterLabels &&
+        runtimeFilterLabels.length !== 0 &&
+        !runtimeFilterLabels.includes(runtimeInterval)
+      ) {
+        isWithinRuntimeInterval = false;
+      }
+
       const genres = ratingInfo.genres.split(', ');
       let isGenrePresent = true;
 
@@ -54,7 +100,21 @@ function RatingPage() {
         }
       });
 
-      return isGenrePresent;
+      const decade = `${ratingInfo.year.slice(0, 3)}0s`;
+      const decadeFilterLabels = filterSort.decadeFilter?.map(
+        (decade) => decade.label
+      );
+      let matchesDecade = true;
+
+      if (
+        decadeFilterLabels &&
+        decadeFilterLabels.length !== 0 &&
+        !decadeFilterLabels.includes(decade)
+      ) {
+        matchesDecade = false;
+      }
+
+      return isWithinRuntimeInterval && isGenrePresent && matchesDecade;
     });
 
     let tempAvgRating = 0;
@@ -73,14 +133,20 @@ function RatingPage() {
       setAvgRating(formattedAvgRating);
     }
 
-    if (filterSort.sortSetting?.value !== 'none') {
-      switch (filterSort.sortSetting?.value) {
-        case 'alpha':
-          filteredMovies.sort((a, b) => a.title.localeCompare(b.title));
-          break;
-        case 'rating':
-          filteredMovies.sort((a, b) => b.rating - a.rating);
-      }
+    switch (filterSort.sortSetting?.value) {
+      case 'alpha':
+        filteredMovies.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'rating':
+        filteredMovies.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'release':
+        filteredMovies.sort(
+          (a, b) =>
+            new Date(b.releaseDate).getTime() -
+            new Date(a.releaseDate).getTime()
+        );
+        break;
     }
 
     return filteredMovies.map((ratingInfo) => (
@@ -136,9 +202,23 @@ function RatingPage() {
           <div className='filter-sort'>
             <Select
               isMulti
+              name='runtimeFilter'
+              options={runtimes}
+              placeholder='Runtime'
+              onChange={handleChange}
+            />
+            <Select
+              isMulti
               name='genreFilter'
               options={genres}
               placeholder='Genre'
+              onChange={handleChange}
+            />
+            <Select
+              isMulti
+              name='decadeFilter'
+              options={getDecades()}
+              placeholder='Decade'
               onChange={handleChange}
             />
             <Select
