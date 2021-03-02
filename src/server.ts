@@ -338,6 +338,8 @@ app.post('/rate', (req, res) => {
           releaseDate: movie.Released,
           imdbRating: movie.imdbRating,
           imdbVotes: movie.imdbVotes,
+          year: movie.Year,
+          plot: movie.Plot,
           ratedBy: [],
         });
         newMovie.save();
