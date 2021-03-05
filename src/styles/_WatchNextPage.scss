@@ -1,0 +1,19 @@
+.watch-next-page-wrapper {
+  bottom: 0;
+  color: $on-primary-color;
+  left: 240px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.watch-next-info {
+  padding: $spacing-normal;
+  text-align: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .watch-next-page-wrapper {
+    position: unset;
+  }
+}

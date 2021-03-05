@@ -41,6 +41,16 @@ type UserRating = Readonly<{
   timestamp: string;
 }>;
 
+type MovieWatchNext = Readonly<{
+  movieID: string;
+  timestamp: string;
+}>;
+
+type UserWatchNext = Readonly<{
+  userID: string;
+  timestamp: string;
+}>;
+
 const userSchema = new mongoose.Schema({
   _id: String,
   name: String,
@@ -49,6 +59,7 @@ const userSchema = new mongoose.Schema({
   joinDateTime: String,
   lastSignInDateTime: String,
   movieRatings: Array<MovieRating>(),
+  watchNext: Array<MovieWatchNext>(),
 });
 
 const User = mongoose.model('User', userSchema);
@@ -65,9 +76,67 @@ const movieSchema = new mongoose.Schema({
   year: String,
   plot: String,
   ratedBy: Array<UserRating>(),
+  watchNextBy: Array<UserWatchNext>(),
 });
 
 const Movie = mongoose.model('Movie', movieSchema);
+
+const getMovieWatchNextInfo = (
+  userID: string,
+  movieID: string,
+  movieDetails: string
+) => {
+  return User.findOne(
+    {
+      _id: userID,
+    },
+    {
+      watchNext: {
+        $elemMatch: {
+          movieID: movieID,
+        },
+      },
+    }
+  )
+    .then((response: any) => {
+      if (response && response.watchNext.length === 1) {
+        const movieWatchNext = response.watchNext[0];
+
+        return Movie.findById(movieID).then((response) => {
+          if (response) {
+            return {
+              imdbID: movieID,
+              Title: response.get('title'),
+              Poster: response.get('poster'),
+              Genre: response.get('genres'),
+              Runtime: response.get('runtime'),
+              Released: response.get('releaseDate'),
+              imdbRating: response.get('imdbRating'),
+              imdbVotes: response.get('imdbVotes'),
+              Year: response.get('year'),
+              Plot: response.get('plot'),
+              Timestamp: movieWatchNext.timestamp,
+            } as OMDbMovie;
+          }
+        });
+      } else {
+        return {
+          imdbID: movieID,
+        } as OMDbMovie;
+      }
+    })
+    .then((response): any => {
+      if (response) {
+        const movieInfo = response;
+
+        if (movieInfo.Title) {
+          return Promise.resolve({ data: movieInfo });
+        }
+
+        return axios.get(movieDetails);
+      }
+    });
+};
 
 const getMovieRatingInfo = (
   userID: string,
@@ -122,7 +191,7 @@ const getMovieRatingInfo = (
           return Promise.resolve({ data: movieInfo });
         }
 
-        return axios.get(movieDetails);
+        return getMovieWatchNextInfo(userID, movieID, movieDetails);
       }
     });
 };
@@ -286,6 +355,7 @@ app.post('/login', (req, res) => {
           joinDateTime: joinDateTime,
           lastSignInDateTime: lastSignInDateTime,
           movieRatings: [],
+          watchNext: [],
         });
         loggedInUser.save();
 
@@ -341,6 +411,7 @@ app.post('/rate', (req, res) => {
           year: movie.Year,
           plot: movie.Plot,
           ratedBy: [],
+          watchNextBy: [],
         });
         newMovie.save();
       }
@@ -456,6 +527,163 @@ app.delete('/delete-rating/:userID/:movieID', (req, res) => {
               console.log(err);
             } else {
               res.send('Rating deleted');
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+app.post('/watch-next', (req, res) => {
+  const { userID, movie, timestamp } = req.body;
+  const movieWatchNext: MovieWatchNext = {
+    movieID: movie.imdbID,
+    timestamp: timestamp,
+  };
+  const userWatchNext: UserWatchNext = {
+    userID: userID,
+    timestamp: timestamp,
+  };
+
+  Movie.exists({ _id: movie.imdbID })
+    .then((movieExists) => {
+      if (!movieExists) {
+        const newMovie = new Movie({
+          _id: movie.imdbID,
+          title: movie.Title,
+          poster: movie.Poster,
+          genres: movie.Genre,
+          runtime: movie.Runtime,
+          releaseDate: movie.Released,
+          imdbRating: movie.imdbRating,
+          imdbVotes: movie.imdbVotes,
+          year: movie.Year,
+          plot: movie.Plot,
+          ratedBy: [],
+          watchNextBy: [],
+        });
+        newMovie.save();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  User.updateOne(
+    {
+      _id: userID,
+    },
+    {
+      $push: {
+        watchNext: movieWatchNext,
+      },
+    },
+    (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        Movie.updateOne(
+          {
+            _id: movie.imdbID,
+          },
+          {
+            $push: {
+              watchNextBy: userWatchNext,
+            },
+          },
+          (err, response) => {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send('Added to Watch Next');
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+app.get('/watch-next/:userID', (req, res) => {
+  const userID = req.params.userID;
+  let userWatchNextMovies = Array<MovieWatchNext>();
+
+  User.findById(userID).then((response) => {
+    if (response) {
+      userWatchNextMovies = response.get('watchNext');
+
+      Promise.all(
+        userWatchNextMovies.map((movieWatchNext) => {
+          const movieID = movieWatchNext.movieID;
+
+          return Movie.findById(movieID)
+            .then((response) => {
+              if (response) {
+                return {
+                  imdbID: movieID,
+                  Title: response.get('title'),
+                  Poster: response.get('poster'),
+                  Genre: response.get('genres'),
+                  Runtime: response.get('runtime'),
+                  Released: response.get('releaseDate'),
+                  imdbRating: response.get('imdbRating'),
+                  imdbVotes: response.get('imdbVotes'),
+                  Year: response.get('year'),
+                  Plot: response.get('plot'),
+                  Timestamp: movieWatchNext.timestamp,
+                } as OMDbMovie;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+      )
+        .then((response) => {
+          res.send(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+});
+
+app.delete('/delete-watch-next/:userID/:movieID', (req, res) => {
+  const { userID, movieID } = req.params;
+
+  User.updateOne(
+    {
+      _id: userID,
+    },
+    {
+      $pull: {
+        watchNext: {
+          movieID: movieID,
+        },
+      },
+    },
+    (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        Movie.updateOne(
+          {
+            _id: movieID,
+          },
+          {
+            $pull: {
+              watchNextBy: {
+                userID: userID,
+              },
+            },
+          },
+          (err, response) => {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send('Deleted from Watch Next');
             }
           }
         );

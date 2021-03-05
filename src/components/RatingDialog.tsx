@@ -78,6 +78,17 @@ function RatingDialog(props: RatingDialogProps) {
           console.log(res.data);
           dispatch(updateRating(true));
           onClose();
+
+          if ('imdbID' in movieInfo && movieInfo.Timestamp) {
+            axios
+              .delete(`/delete-watch-next/${user.uid}/${movieInfo.imdbID}`)
+              .then((res) => {
+                console.log(res.data);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
         })
         .catch((err) => {
           console.log(err);

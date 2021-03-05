@@ -78,15 +78,23 @@
   width: 100%;
 }
 
-.rating-history-button {
+.user-page-options {
+  align-items: center;
+  display: flex;
+  gap: $spacing-normal;
+  justify-content: center;
+  margin: $spacing-normal;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+}
+
+.options-button {
   background-color: $secondary-color;
   border-radius: 8px;
   cursor: pointer;
-  margin: $spacing-normal;
   padding: $spacing-normal;
-  position: absolute;
-  right: 0;
-  top: 0;
 }
 
 @media only screen and (max-width: 600px) {
@@ -105,10 +113,7 @@
     text-align: center;
   }
 
-  .rating-history-button {
-    margin: 0 auto;
+  .user-page-options {
     position: unset;
-    transform: translate(0, $spacing-normal);
-    width: fit-content;
   }
 }

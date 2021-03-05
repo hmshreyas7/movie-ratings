@@ -60,3 +60,9 @@ export const setRegion = (regionCode: string) => {
     payload: regionCode,
   };
 };
+
+export const toggleWatchNext = () => {
+  return {
+    type: 'TOGGLE_WATCH_NEXT',
+  };
+};

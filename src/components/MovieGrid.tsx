@@ -21,6 +21,9 @@ function MovieGrid(props: MovieGridProps) {
   let isRatingUpdated = useSelector(
     (state: RootState) => state.isRatingUpdated
   );
+  let isWatchNextToggled = useSelector(
+    (state: RootState) => state.isWatchNextToggled
+  );
   let dispatch = useDispatch();
 
   let [movies, setMovies] = useState<Array<OMDbMovie | MovieRatingInfo>>([]);
@@ -50,7 +53,15 @@ function MovieGrid(props: MovieGridProps) {
       dispatch(loading(true));
       dispatch(updateRating(false));
     };
-  }, [isSearch, searchQuery, regionCode, dispatch, user.uid, isRatingUpdated]);
+  }, [
+    isSearch,
+    searchQuery,
+    regionCode,
+    dispatch,
+    user.uid,
+    isRatingUpdated,
+    isWatchNextToggled,
+  ]);
 
   const handleChange = (selected: any) => {
     dispatch(setRegion(selected ? selected.value : ''));

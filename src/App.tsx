@@ -10,6 +10,7 @@ import SideNav from './components/SideNav';
 import SignUpPage from './components/SignUpPage';
 import TrendingPage from './components/TrendingPage';
 import UserPage from './components/UserPage';
+import WatchNextPage from './components/WatchNextPage';
 
 function App() {
   return (
@@ -42,6 +43,9 @@ function App() {
         </Route>
         <Route path='/rating-stats'>
           <RatingStatsPage />
+        </Route>
+        <Route path='/watch-next-movies'>
+          <WatchNextPage />
         </Route>
         <Route path='/'>
           <MovieGrid />

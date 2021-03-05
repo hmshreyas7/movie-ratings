@@ -53,6 +53,10 @@ function UserPage() {
     history.push('/ratings');
   };
 
+  const goToWatchNextPage = () => {
+    history.push('/watch-next-movies');
+  };
+
   if (user.uid) {
     return (
       <div className='user-page-wrapper'>
@@ -101,8 +105,13 @@ function UserPage() {
             </div>
           </div>
         </div>
-        <div className='rating-history-button' onClick={goToRatingPage}>
-          Rating History
+        <div className='user-page-options'>
+          <div className='options-button' onClick={goToRatingPage}>
+            Rating History
+          </div>
+          <div className='options-button' onClick={goToWatchNextPage}>
+            Watch Next
+          </div>
         </div>
       </div>
     );

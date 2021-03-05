@@ -6,6 +6,7 @@ import posterPositionReducer from './posterPosition';
 import isLoadingReducer from './isLoading';
 import isRatingUpdatedReducer from './isRatingUpdated';
 import regionCodeReducer from './regionCode';
+import isWatchNextToggledReducer from './isWatchNextToggled';
 import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   isLoading: isLoadingReducer,
   isRatingUpdated: isRatingUpdatedReducer,
   regionCode: regionCodeReducer,
+  isWatchNextToggled: isWatchNextToggledReducer,
 });
 
 export default rootReducer;

@@ -4,6 +4,7 @@ import {
   Edit,
   Grade,
   MovieFilter,
+  Remove,
   Schedule,
 } from '@material-ui/icons';
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
@@ -13,6 +14,8 @@ import { RootState } from '../rootState';
 import NoData from './NoData';
 import RatingDialog from './RatingDialog';
 import imdbLogo from '../assets/imdb-logo.png';
+import ConfirmationDialog from './ConfirmationDialog';
+import axios from 'axios';
 
 function MoviePage() {
   const movieInfo = useSelector((state: RootState) => state.movieInfo);
@@ -31,6 +34,7 @@ function MoviePage() {
     imdbVotes,
     year,
     plot,
+    timestamp,
   } =
     'imdbID' in movieInfo
       ? {
@@ -44,11 +48,13 @@ function MoviePage() {
           imdbVotes: movieInfo.imdbVotes,
           year: movieInfo.Year,
           plot: movieInfo.Plot,
+          timestamp: movieInfo.Timestamp,
         }
       : movieInfo;
 
   let history = useHistory();
   let [isDialogOpen, setDialogOpen] = useState(false);
+  let [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
 
   const pageWrapperRef = useRef<HTMLDivElement>(null);
   const posterRef = useRef<HTMLImageElement>(null);
@@ -117,12 +123,39 @@ function MoviePage() {
     setDialogOpen(false);
   };
 
-  const handleAdd = () => {
+  const handleRate = () => {
     if (user.uid) {
       setDialogOpen(true);
     } else {
       history.push('/login');
     }
+  };
+
+  const handleWatchNext = () => {
+    if (timestamp) {
+      setConfirmationDialogOpen(true);
+    } else {
+      if (user.uid) {
+        axios
+          .post('/watch-next', {
+            userID: user.uid,
+            movie: movieInfo,
+            timestamp: new Date().toString(),
+          })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        history.push('/login');
+      }
+    }
+  };
+
+  const handleConfirmationDialogClose = () => {
+    setConfirmationDialogOpen(false);
   };
 
   return (
@@ -140,6 +173,13 @@ function MoviePage() {
               onClose={handleDialogClose}
               movieInfo={movieInfo}
             />
+            {timestamp && (
+              <ConfirmationDialog
+                isOpen={isConfirmationDialogOpen}
+                onClose={handleConfirmationDialogClose}
+                movieInfo={movieInfo}
+              />
+            )}
             <div className='movie-page-external-link' title='View on IMDb'>
               <a
                 href={`https://www.imdb.com/title/${id}`}
@@ -151,11 +191,22 @@ function MoviePage() {
             </div>
             <div
               className='movie-page-icon-action'
-              onClick={handleAdd}
-              title={'imdbID' in movieInfo ? 'Add' : 'Edit'}
+              onClick={handleRate}
+              title={'imdbID' in movieInfo ? 'Rate' : 'Edit'}
             >
-              {'imdbID' in movieInfo ? <Add /> : <Edit />}
+              {'imdbID' in movieInfo ? <Grade /> : <Edit />}
             </div>
+            {'imdbID' in movieInfo && (
+              <div
+                className='movie-page-icon-action'
+                onClick={handleWatchNext}
+                title={
+                  timestamp ? 'Remove from Watch Next' : 'Add to Watch Next'
+                }
+              >
+                {timestamp ? <Remove /> : <Add />}
+              </div>
+            )}
           </div>
           <div className='movie-page-info'>
             <div className='movie-page-info-poster' style={posterParentStyle}>

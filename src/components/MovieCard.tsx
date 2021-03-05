@@ -2,10 +2,15 @@ import { Grade } from '@material-ui/icons';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { setMoviePosterPosition, viewMovieDetails } from '../actions';
+import {
+  setMoviePosterPosition,
+  toggleWatchNext,
+  viewMovieDetails,
+} from '../actions';
 import { RootState } from '../rootState';
 import RatingDialog from './RatingDialog';
 import ConfirmationDialog from './ConfirmationDialog';
+import axios from 'axios';
 
 interface MovieCardProps {
   movieInfo: OMDbMovie | MovieRatingInfo;
@@ -27,7 +32,7 @@ function MovieCard(props: MovieCardProps) {
           poster: movieInfo.Poster,
           title: movieInfo.Title,
           rating: movieInfo.imdbRating,
-          timestamp: null,
+          timestamp: movieInfo.Timestamp,
         }
       : movieInfo;
 
@@ -64,6 +69,30 @@ function MovieCard(props: MovieCardProps) {
   };
 
   const handleDelete = () => {
+    setConfirmationDialogOpen(true);
+  };
+
+  const handleAdd = () => {
+    if (user.uid) {
+      axios
+        .post('/watch-next', {
+          userID: user.uid,
+          movie: movieInfo,
+          timestamp: new Date().toString(),
+        })
+        .then((res) => {
+          console.log(res.data);
+          dispatch(toggleWatchNext());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      history.push('/login');
+    }
+  };
+
+  const handleRemove = () => {
     setConfirmationDialogOpen(true);
   };
 
@@ -107,7 +136,7 @@ function MovieCard(props: MovieCardProps) {
             onClose={handleRatingDialogClose}
             movieInfo={movieInfo}
           />
-          {!('imdbID' in movieInfo) && (
+          {timestamp && (
             <ConfirmationDialog
               isOpen={isConfirmationDialogOpen}
               onClose={handleConfirmationDialogClose}
@@ -115,12 +144,18 @@ function MovieCard(props: MovieCardProps) {
             />
           )}
           <button onClick={handleRate}>
-            {'imdbID' in movieInfo ? 'Add' : 'Edit'}
+            {'imdbID' in movieInfo ? 'Rate' : 'Edit'}
           </button>
           {!('imdbID' in movieInfo) && (
             <button onClick={handleDelete}>Delete</button>
           )}
           <button onClick={handleView}>View</button>
+          {'imdbID' in movieInfo &&
+            (timestamp ? (
+              <button onClick={handleRemove}>Remove</button>
+            ) : (
+              <button onClick={handleAdd}>Add</button>
+            ))}
         </div>
       </div>
       <div className='movie-card-info'>
