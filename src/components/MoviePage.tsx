@@ -1,6 +1,7 @@
 import {
   Add,
   CalendarToday,
+  Delete,
   Edit,
   Grade,
   MovieFilter,
@@ -182,6 +183,10 @@ function MoviePage() {
     }
   };
 
+  const handleDelete = () => {
+    setConfirmationDialogOpen(true);
+  };
+
   const handleConfirmationDialogClose = () => {
     setConfirmationDialogOpen(false);
   };
@@ -229,7 +234,7 @@ function MoviePage() {
             >
               {'imdbID' in movieInfo ? <Grade /> : <Edit />}
             </div>
-            {'imdbID' in movieInfo && (
+            {'imdbID' in movieInfo ? (
               <div
                 className='movie-page-icon-action'
                 onClick={handleWatchNext}
@@ -238,6 +243,14 @@ function MoviePage() {
                 }
               >
                 {timestamp ? <Remove /> : <Add />}
+              </div>
+            ) : (
+              <div
+                className='movie-page-icon-action'
+                onClick={handleDelete}
+                title='Delete'
+              >
+                <Delete />
               </div>
             )}
           </div>
