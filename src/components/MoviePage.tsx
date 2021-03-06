@@ -8,14 +8,16 @@ import {
   Schedule,
 } from '@material-ui/icons';
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { RootState } from '../rootState';
 import NoData from './NoData';
 import RatingDialog from './RatingDialog';
 import imdbLogo from '../assets/imdb-logo.png';
 import ConfirmationDialog from './ConfirmationDialog';
 import axios from 'axios';
+import { loading, toggleWatchNext, viewMovieDetails } from '../actions';
+import { CircularProgress } from '@material-ui/core';
 
 function MoviePage() {
   const movieInfo = useSelector((state: RootState) => state.movieInfo);
@@ -23,6 +25,10 @@ function MoviePage() {
     (state: RootState) => state.posterPosition
   );
   const user = useSelector((state: RootState) => state.user);
+  const isLoading = useSelector((state: RootState) => state.isLoading);
+  const isWatchNextToggled = useSelector(
+    (state: RootState) => state.isWatchNextToggled
+  );
   const {
     id,
     poster,
@@ -53,6 +59,9 @@ function MoviePage() {
       : movieInfo;
 
   let history = useHistory();
+  let dispatch = useDispatch();
+  const match = useRouteMatch<{ movieID: string }>('/movie/:movieID');
+  const urlMovieID = match?.params.movieID;
   let [isDialogOpen, setDialogOpen] = useState(false);
   let [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
 
@@ -86,18 +95,19 @@ function MoviePage() {
   };
 
   useEffect(() => {
-    const childRef = posterRef.current,
-      parentRef = posterRef.current?.parentElement;
+    if (id) {
+      const childRef = posterRef.current,
+        parentRef = posterRef.current?.parentElement;
 
-    const resetStyles = () => {
-      pageWrapperRef.current?.removeAttribute('style');
-      parentRef?.removeAttribute('style');
-      childRef?.removeAttribute('style');
-    };
+      const resetStyles = () => {
+        pageWrapperRef.current?.removeAttribute('style');
+        parentRef?.removeAttribute('style');
+        childRef?.removeAttribute('style');
+      };
 
-    if (childRef && parentRef) {
-      const { x: parentX, y: parentY } = parentRef.getBoundingClientRect();
-      const posterChildStyle = `
+      if (childRef && parentRef) {
+        const { x: parentX, y: parentY } = parentRef.getBoundingClientRect();
+        const posterChildStyle = `
       border-radius: 20px;
       box-shadow: 0px 0px 8px 2px ${cardShadowColor};
       left: ${mediaQueryMatch ? `${parentX}px` : `calc(${parentX}px - 240px)`};
@@ -110,14 +120,31 @@ function MoviePage() {
       width: ${posterWidth};
       `;
 
-      childRef.setAttribute('style', posterChildStyle);
-      childRef.addEventListener('transitionend', resetStyles);
+        childRef.setAttribute('style', posterChildStyle);
+        childRef.addEventListener('transitionend', resetStyles);
+      }
+
+      return () => {
+        childRef?.removeEventListener('transitionend', resetStyles);
+      };
     }
+  }, [mediaQueryMatch, id]);
+
+  useEffect(() => {
+    axios
+      .get(`/movie-info/${user.uid}/${urlMovieID}`)
+      .then((res) => {
+        dispatch(viewMovieDetails(res.data));
+        dispatch(loading(false));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     return () => {
-      childRef?.removeEventListener('transitionend', resetStyles);
+      dispatch(loading(true));
     };
-  }, [mediaQueryMatch]);
+  }, [dispatch, isWatchNextToggled, user.uid, urlMovieID]);
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -144,6 +171,7 @@ function MoviePage() {
           })
           .then((res) => {
             console.log(res.data);
+            dispatch(toggleWatchNext());
           })
           .catch((err) => {
             console.log(err);
@@ -164,6 +192,11 @@ function MoviePage() {
       style={pageWrapperStyle}
       ref={pageWrapperRef}
     >
+      {isLoading && (
+        <div className='loading-indicator'>
+          <CircularProgress color='inherit' />
+        </div>
+      )}
       {id ? (
         <>
           <div className='movie-page-header'>

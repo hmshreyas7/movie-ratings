@@ -266,6 +266,23 @@ const recentTimestampCount = (timestamps: string[], isPrevious?: boolean) => {
   return count;
 };
 
+app.get('/movie-info/:userID/:movieID', (req, res) => {
+  const { userID, movieID } = req.params;
+  const omdbAPI = 'http://www.omdbapi.com';
+  const omdbKey = process.env.OMDB_API_KEY;
+  const movieDetails = omdbAPI + `/?i=${movieID}&apikey=${omdbKey}`;
+
+  (() => {
+    if (userID !== 'undefined') {
+      return getMovieRatingInfo(userID, movieID, movieDetails);
+    } else {
+      return axios.get(movieDetails);
+    }
+  })()
+    .then((response) => res.send(response.data))
+    .catch(() => res.send({}));
+});
+
 app.get('/movies/:userID', (req, res) => {
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
   const tmdbSearchAPI = 'https://api.themoviedb.org/3/search';
