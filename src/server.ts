@@ -736,8 +736,8 @@ app.get('/watchstats/:userID', (req, res) => {
 
           return Movie.findById(movieID).then((response) => {
             if (response) {
-              const runtime = response.get('runtime').slice(0, -4);
-              hoursWatched.push(parseInt(runtime));
+              const runtime = parseInt(response.get('runtime').slice(0, -4));
+              hoursWatched.push(isNaN(runtime) ? 0 : runtime);
 
               response
                 .get('genres')
