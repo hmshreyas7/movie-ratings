@@ -113,7 +113,15 @@ function MovieGrid(props: MovieGridProps) {
         <div className='movie-grid'>
           {[...movies].map((movie: OMDbMovie | MovieRatingInfo) => {
             const key = getKey(movie);
-            return key && <MovieCard key={key} movieInfo={movie} />;
+            return (
+              key && (
+                <MovieCard
+                  key={key}
+                  movieInfo={movie}
+                  isMovieGridParent={true}
+                />
+              )
+            );
           })}
         </div>
       </div>

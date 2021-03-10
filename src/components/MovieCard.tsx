@@ -1,4 +1,4 @@
-import { Grade } from '@material-ui/icons';
+import { Check, Grade, Visibility } from '@material-ui/icons';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -14,6 +14,7 @@ import axios from 'axios';
 
 interface MovieCardProps {
   movieInfo: OMDbMovie | MovieRatingInfo;
+  isMovieGridParent?: boolean;
 }
 
 function MovieCard(props: MovieCardProps) {
@@ -23,7 +24,7 @@ function MovieCard(props: MovieCardProps) {
   let [isRatingDialogOpen, setRatingDialogOpen] = useState(false);
   let [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const posterRef = useRef<HTMLImageElement>(null);
-  const { movieInfo } = props;
+  const { movieInfo, isMovieGridParent } = props;
 
   const { id, poster, title, rating, timestamp } =
     'imdbID' in movieInfo
@@ -130,6 +131,18 @@ function MovieCard(props: MovieCardProps) {
       )}
       <div className='movie-card-poster'>
         <img src={poster} alt={title} ref={posterRef} />
+        {isMovieGridParent && timestamp && (
+          <div
+            className='movie-card-type-indicator'
+            style={
+              'imdbID' in movieInfo
+                ? { background: '#019ec9' }
+                : { background: '#6bb86a' }
+            }
+          >
+            {'imdbID' in movieInfo ? <Visibility /> : <Check />}
+          </div>
+        )}
         <div className='movie-card-overlay'>
           <RatingDialog
             isOpen={isRatingDialogOpen}
