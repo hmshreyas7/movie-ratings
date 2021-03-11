@@ -17,7 +17,12 @@ import RatingDialog from './RatingDialog';
 import imdbLogo from '../assets/imdb-logo.png';
 import ConfirmationDialog from './ConfirmationDialog';
 import axios from 'axios';
-import { loading, toggleWatchNext, viewMovieDetails } from '../actions';
+import {
+  loading,
+  toggleWatchNext,
+  updateRating,
+  viewMovieDetails,
+} from '../actions';
 import { CircularProgress } from '@material-ui/core';
 
 function MoviePage() {
@@ -29,6 +34,9 @@ function MoviePage() {
   const isLoading = useSelector((state: RootState) => state.isLoading);
   const isWatchNextToggled = useSelector(
     (state: RootState) => state.isWatchNextToggled
+  );
+  const isRatingUpdated = useSelector(
+    (state: RootState) => state.isRatingUpdated
   );
   const {
     id,
@@ -144,8 +152,9 @@ function MoviePage() {
 
     return () => {
       dispatch(loading(true));
+      dispatch(updateRating(false));
     };
-  }, [dispatch, isWatchNextToggled, user.uid, urlMovieID]);
+  }, [dispatch, isWatchNextToggled, isRatingUpdated, user.uid, urlMovieID]);
 
   const handleDialogClose = () => {
     setDialogOpen(false);
