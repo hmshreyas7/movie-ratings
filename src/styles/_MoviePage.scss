@@ -14,11 +14,16 @@
 .movie-page-header {
   align-items: center;
   display: flex;
-  gap: $spacing-small;
+  gap: $spacing-normal;
 }
 
 .movie-page-header h1 {
   flex: 1;
+}
+
+.movie-page-actions {
+  display: flex;
+  gap: $spacing-small;
 }
 
 .movie-page-info {
@@ -104,6 +109,11 @@
 }
 
 @media only screen and (max-width: 1060px) {
+  .movie-page-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
   .movie-page-info {
     align-items: center;
     flex-direction: column;

@@ -227,41 +227,43 @@ function MoviePage() {
                 movieInfo={movieInfo}
               />
             )}
-            <div className='movie-page-external-link' title='View on IMDb'>
-              <a
-                href={`https://www.imdb.com/title/${id}`}
-                target='_blank'
-                rel='noreferrer'
-              >
-                <img src={imdbLogo} alt='IMDb' />
-              </a>
-            </div>
-            <div
-              className='movie-page-icon-action'
-              onClick={handleRate}
-              title={'imdbID' in movieInfo ? 'Rate' : 'Edit'}
-            >
-              {'imdbID' in movieInfo ? <Grade /> : <Edit />}
-            </div>
-            {'imdbID' in movieInfo ? (
+            <div className='movie-page-actions'>
+              <div className='movie-page-external-link' title='View on IMDb'>
+                <a
+                  href={`https://www.imdb.com/title/${id}`}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <img src={imdbLogo} alt='IMDb' />
+                </a>
+              </div>
               <div
                 className='movie-page-icon-action'
-                onClick={handleWatchNext}
-                title={
-                  timestamp ? 'Remove from Watch Next' : 'Add to Watch Next'
-                }
+                onClick={handleRate}
+                title={'imdbID' in movieInfo ? 'Rate' : 'Edit'}
               >
-                {timestamp ? <Remove /> : <Add />}
+                {'imdbID' in movieInfo ? <Grade /> : <Edit />}
               </div>
-            ) : (
-              <div
-                className='movie-page-icon-action'
-                onClick={handleDelete}
-                title='Delete'
-              >
-                <Delete />
-              </div>
-            )}
+              {'imdbID' in movieInfo ? (
+                <div
+                  className='movie-page-icon-action'
+                  onClick={handleWatchNext}
+                  title={
+                    timestamp ? 'Remove from Watch Next' : 'Add to Watch Next'
+                  }
+                >
+                  {timestamp ? <Remove /> : <Add />}
+                </div>
+              ) : (
+                <div
+                  className='movie-page-icon-action'
+                  onClick={handleDelete}
+                  title='Delete'
+                >
+                  <Delete />
+                </div>
+              )}
+            </div>
           </div>
           <div className='movie-page-info'>
             <div className='movie-page-info-poster' style={posterParentStyle}>
