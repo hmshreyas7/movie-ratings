@@ -162,13 +162,13 @@ function MovieCard(props: MovieCardProps) {
           {!('imdbID' in movieInfo) && (
             <button onClick={handleDelete}>Delete</button>
           )}
-          <button onClick={handleView}>View</button>
           {'imdbID' in movieInfo &&
             (timestamp ? (
               <button onClick={handleRemove}>Remove</button>
             ) : (
               <button onClick={handleAdd}>Add</button>
             ))}
+          <button onClick={handleView}>View</button>
         </div>
       </div>
       <div className='movie-card-info'>
