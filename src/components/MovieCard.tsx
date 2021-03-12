@@ -76,7 +76,7 @@ function MovieCard(props: MovieCardProps) {
   const handleAdd = () => {
     if (user.uid) {
       axios
-        .post('/watch-next', {
+        .post('/api/watch-next', {
           userID: user.uid,
           movie: movieInfo,
           timestamp: new Date().toString(),

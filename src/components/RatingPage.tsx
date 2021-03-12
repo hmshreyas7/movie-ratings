@@ -157,7 +157,7 @@ function RatingPage() {
   useEffect(() => {
     if (user.uid) {
       axios
-        .get(`/movieratings/${user.uid}`)
+        .get(`/api/movieratings/${user.uid}`)
         .then((res) => {
           setMovies(res.data.reverse());
           dispatch(loading(false));

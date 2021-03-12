@@ -37,7 +37,7 @@ function WatchNextPage() {
   useEffect(() => {
     if (user.uid) {
       axios
-        .get(`/watch-next/${user.uid}`)
+        .get(`/api/watch-next/${user.uid}`)
         .then((res) => {
           setMovies(res.data);
           dispatch(loading(false));

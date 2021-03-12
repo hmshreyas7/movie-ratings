@@ -20,7 +20,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps) {
 
   const handleRemove = () => {
     axios
-      .delete(`/delete-watch-next/${user.uid}/${movieID}`)
+      .delete(`/api/delete-watch-next/${user.uid}/${movieID}`)
       .then((res) => {
         console.log(res.data);
         dispatch(toggleWatchNext());
@@ -33,7 +33,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps) {
 
   const handleDelete = () => {
     axios
-      .delete(`/delete-rating/${user.uid}/${movieID}`)
+      .delete(`/api/delete-rating/${user.uid}/${movieID}`)
       .then((res) => {
         console.log(res.data);
         dispatch(updateRating(true));

@@ -27,7 +27,7 @@ function UserPage() {
   useEffect(() => {
     if (user.uid) {
       axios
-        .get(`/watchstats/${user.uid}`)
+        .get(`/api/watchstats/${user.uid}`)
         .then((res) => {
           setWatchStats({
             hoursWatched: res.data.hoursWatched,

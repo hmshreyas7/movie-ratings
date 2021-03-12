@@ -266,7 +266,7 @@ const recentTimestampCount = (timestamps: string[], isPrevious?: boolean) => {
   return count;
 };
 
-app.get('/movie-info/:userID/:movieID', (req, res) => {
+app.get('/api/movie-info/:userID/:movieID', (req, res) => {
   const { userID, movieID } = req.params;
   const omdbAPI = 'http://www.omdbapi.com';
   const omdbKey = process.env.OMDB_API_KEY;
@@ -283,7 +283,7 @@ app.get('/movie-info/:userID/:movieID', (req, res) => {
     .catch(() => res.send({}));
 });
 
-app.get('/movies/:userID', (req, res) => {
+app.get('/api/movies/:userID', (req, res) => {
   const tmdbAPI = 'https://api.themoviedb.org/3/movie';
   const tmdbSearchAPI = 'https://api.themoviedb.org/3/search';
   const omdbAPI = 'http://www.omdbapi.com';
@@ -337,7 +337,7 @@ app.get('/movies/:userID', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
   const {
     _id,
     name,
@@ -385,7 +385,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.get('/facebook-photo', (req, res) => {
+app.get('/api/facebook-photo', (req, res) => {
   const photoURL = req.query.photoURL;
   const accessToken = process.env.FACEBOOK_ACCESS_TOKEN;
 
@@ -399,7 +399,7 @@ app.get('/facebook-photo', (req, res) => {
     });
 });
 
-app.post('/rate', (req, res) => {
+app.post('/api/rate', (req, res) => {
   const { userID, movie, rating, timestamp } = req.body;
   const isOMDbMovie = 'imdbID' in movie;
   const movieRating: MovieRating = {
@@ -510,7 +510,7 @@ app.post('/rate', (req, res) => {
   }
 });
 
-app.delete('/delete-rating/:userID/:movieID', (req, res) => {
+app.delete('/api/delete-rating/:userID/:movieID', (req, res) => {
   const { userID, movieID } = req.params;
 
   User.updateOne(
@@ -552,7 +552,7 @@ app.delete('/delete-rating/:userID/:movieID', (req, res) => {
   );
 });
 
-app.post('/watch-next', (req, res) => {
+app.post('/api/watch-next', (req, res) => {
   const { userID, movie, timestamp } = req.body;
   const movieWatchNext: MovieWatchNext = {
     movieID: movie.imdbID,
@@ -622,7 +622,7 @@ app.post('/watch-next', (req, res) => {
   );
 });
 
-app.get('/watch-next/:userID', (req, res) => {
+app.get('/api/watch-next/:userID', (req, res) => {
   const userID = req.params.userID;
   let userWatchNextMovies = Array<MovieWatchNext>();
 
@@ -667,7 +667,7 @@ app.get('/watch-next/:userID', (req, res) => {
   });
 });
 
-app.delete('/delete-watch-next/:userID/:movieID', (req, res) => {
+app.delete('/api/delete-watch-next/:userID/:movieID', (req, res) => {
   const { userID, movieID } = req.params;
 
   User.updateOne(
@@ -709,7 +709,7 @@ app.delete('/delete-watch-next/:userID/:movieID', (req, res) => {
   );
 });
 
-app.get('/watchstats/:userID', (req, res) => {
+app.get('/api/watchstats/:userID', (req, res) => {
   const userID = req.params.userID;
 
   let userMovieRatings = Array<MovieRating>();
@@ -816,7 +816,7 @@ app.get('/watchstats/:userID', (req, res) => {
   });
 });
 
-app.get('/movieratings/:userID', (req, res) => {
+app.get('/api/movieratings/:userID', (req, res) => {
   const userID = req.params.userID;
   let userMovieRatings = Array<MovieRating>();
 
@@ -862,7 +862,7 @@ app.get('/movieratings/:userID', (req, res) => {
   });
 });
 
-app.get('/movie-rating-stats/:userID', (req, res) => {
+app.get('/api/movie-rating-stats/:userID', (req, res) => {
   const userID = req.params.userID;
   let userMovieRatings = Array<MovieRating>();
 
@@ -1002,7 +1002,7 @@ app.get('/movie-rating-stats/:userID', (req, res) => {
     });
 });
 
-app.get('/profile-info/:userID', (req, res) => {
+app.get('/api/profile-info/:userID', (req, res) => {
   const userID = req.params.userID;
 
   User.findById(userID).then((response) => {
@@ -1017,7 +1017,7 @@ app.get('/profile-info/:userID', (req, res) => {
   });
 });
 
-app.post('/profile-info', (req, res) => {
+app.post('/api/profile-info', (req, res) => {
   const { userID, email, birthday } = req.body;
 
   User.updateOne(
@@ -1042,7 +1042,7 @@ app.post('/profile-info', (req, res) => {
   setMailchimpInfo(email, birthday);
 });
 
-app.get('/trending-movies', (req, res) => {
+app.get('/api/trending-movies', (req, res) => {
   Movie.aggregate([
     {
       $addFields: {

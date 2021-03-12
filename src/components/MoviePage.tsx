@@ -141,7 +141,7 @@ function MoviePage() {
 
   useEffect(() => {
     axios
-      .get(`/movie-info/${user.uid}/${urlMovieID}`)
+      .get(`/api/movie-info/${user.uid}/${urlMovieID}`)
       .then((res) => {
         dispatch(viewMovieDetails(res.data));
         dispatch(loading(false));
@@ -174,7 +174,7 @@ function MoviePage() {
     } else {
       if (user.uid) {
         axios
-          .post('/watch-next', {
+          .post('/api/watch-next', {
             userID: user.uid,
             movie: movieInfo,
             timestamp: new Date().toString(),

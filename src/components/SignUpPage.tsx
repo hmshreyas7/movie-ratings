@@ -69,7 +69,7 @@ function SignUpPage() {
               dispatch(login(newUser));
               history.push('/');
 
-              return axios.post('/login', {
+              return axios.post('/api/login', {
                 _id: newUser.uid,
                 name: newUser.displayName,
                 email: newUser.email,

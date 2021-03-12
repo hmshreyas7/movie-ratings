@@ -35,7 +35,7 @@ function LoginPage() {
         history.push('/');
 
         axios
-          .post('/login', {
+          .post('/api/login', {
             _id: user.uid,
             name: user.displayName,
             email: user.email,

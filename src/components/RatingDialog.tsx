@@ -68,7 +68,7 @@ function RatingDialog(props: RatingDialogProps) {
       setRatingError(true);
     } else {
       axios
-        .post('/rate', {
+        .post('/api/rate', {
           userID: user.uid,
           movie: movieInfo,
           rating: rating,
@@ -81,7 +81,7 @@ function RatingDialog(props: RatingDialogProps) {
 
           if ('imdbID' in movieInfo && movieInfo.Timestamp) {
             axios
-              .delete(`/delete-watch-next/${user.uid}/${movieInfo.imdbID}`)
+              .delete(`/api/delete-watch-next/${user.uid}/${movieInfo.imdbID}`)
               .then((res) => {
                 console.log(res.data);
               })

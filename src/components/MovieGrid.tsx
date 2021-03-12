@@ -37,7 +37,7 @@ function MovieGrid(props: MovieGridProps) {
 
     axios
       .get(
-        `/movies/${user.uid}?isSearch=${isSearch}&searchQuery=${searchQuery}&regionCode=${regionCode}`
+        `/api/movies/${user.uid}?isSearch=${isSearch}&searchQuery=${searchQuery}&regionCode=${regionCode}`
       )
       .then((res) => {
         setMovies(res.data);

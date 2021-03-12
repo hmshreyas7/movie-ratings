@@ -12,7 +12,7 @@ function TrendingPage() {
 
   useEffect(() => {
     axios
-      .get('/trending-movies')
+      .get('/api/trending-movies')
       .then((res) => {
         dispatch(loading(false));
         setTrendingMovies(res.data);

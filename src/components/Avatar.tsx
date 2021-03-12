@@ -46,7 +46,7 @@ function Avatar(props: AvatarProps) {
         .catch(() => {
           if (user.photoURL?.includes('graph.facebook.com')) {
             axios
-              .get(`/facebook-photo?photoURL=${user.photoURL}`)
+              .get(`/api/facebook-photo?photoURL=${user.photoURL}`)
               .then((res) => {
                 setProfilePhotoURL(res.data);
               })
