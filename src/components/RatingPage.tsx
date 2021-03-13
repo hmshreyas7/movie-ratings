@@ -140,6 +140,9 @@ function RatingPage() {
       case 'rating':
         filteredMovies.sort((a, b) => b.rating - a.rating);
         break;
+      case 'num_ratings':
+        filteredMovies.sort((a, b) => b.votes - a.votes);
+        break;
       case 'release':
         filteredMovies.sort(
           (a, b) =>

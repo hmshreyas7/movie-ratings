@@ -648,6 +648,7 @@ app.get('/api/watch-next/:userID', (req, res) => {
                   imdbVotes: response.get('imdbVotes'),
                   Year: response.get('year'),
                   Plot: response.get('plot'),
+                  Votes: response.get('ratedBy').length,
                   Timestamp: movieWatchNext.timestamp,
                 } as OMDbMovie;
               }
@@ -843,6 +844,7 @@ app.get('/api/movieratings/:userID', (req, res) => {
                   year: response.get('year'),
                   plot: response.get('plot'),
                   rating: movieRating.rating,
+                  votes: response.get('ratedBy').length,
                   timestamp: movieRating.timestamp,
                 } as MovieRatingInfo;
               }

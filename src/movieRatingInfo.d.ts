@@ -10,5 +10,6 @@ type MovieRatingInfo = Readonly<{
   year: string;
   plot: string;
   rating: number;
+  votes: number;
   timestamp: string;
 }>;

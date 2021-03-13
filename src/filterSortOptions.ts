@@ -34,5 +34,6 @@ export const genres = [
 export const sorts = [
   { value: 'alpha', label: 'Alphabetical' },
   { value: 'rating', label: 'Rating' },
+  { value: 'num_ratings', label: 'Number of Ratings' },
   { value: 'release', label: 'Release Date' },
 ];

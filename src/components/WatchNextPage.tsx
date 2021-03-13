@@ -23,7 +23,7 @@ function WatchNextPage() {
   let isRatingUpdated = useSelector(
     (state: RootState) => state.isRatingUpdated
   );
-  let [movies, setMovies] = useState<Array<any>>([]);
+  let [movies, setMovies] = useState<Array<OMDbMovie>>([]);
   let [filterSort, setFilterSort] = useState({
     runtimeFilter: [] as SelectedOption[],
     genreFilter: [] as SelectedOption[],
@@ -145,7 +145,19 @@ function WatchNextPage() {
         filteredMovies.sort((a, b) => a.Title.localeCompare(b.Title));
         break;
       case 'rating':
-        filteredMovies.sort((a, b) => b.imdbRating - a.imdbRating);
+        filteredMovies.sort((a, b) => {
+          const imdbRatingA = isNaN(Number(a.imdbRating))
+            ? 0
+            : Number(a.imdbRating);
+          const imdbRatingB = isNaN(Number(b.imdbRating))
+            ? 0
+            : Number(b.imdbRating);
+
+          return imdbRatingB - imdbRatingA;
+        });
+        break;
+      case 'num_ratings':
+        filteredMovies.sort((a, b) => b.Votes - a.Votes);
         break;
       case 'release':
         filteredMovies.sort(

@@ -23,6 +23,7 @@ type OMDbMovie = Readonly<{
   BoxOffice: string;
   Production: string;
   Website: string;
+  Votes: number;
   Timestamp: string;
   Response: string;
 }>;
