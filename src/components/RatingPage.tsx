@@ -15,6 +15,13 @@ type SelectedOption = {
   label: string;
 };
 
+type FilterSort = {
+  runtimeFilter: SelectedOption[];
+  genreFilter: SelectedOption[];
+  decadeFilter: SelectedOption[];
+  sortSetting: SelectedOption | null;
+};
+
 function RatingPage() {
   const user = useSelector((state: RootState) => state.user);
   let isLoading = useSelector((state: RootState) => state.isLoading);
@@ -22,11 +29,11 @@ function RatingPage() {
     (state: RootState) => state.isRatingUpdated
   );
   let [movies, setMovies] = useState<Array<MovieRatingInfo>>([]);
-  let [filterSort, setFilterSort] = useState({
-    runtimeFilter: [] as SelectedOption[],
-    genreFilter: [] as SelectedOption[],
-    decadeFilter: [] as SelectedOption[],
-    sortSetting: {} as SelectedOption,
+  let [filterSort, setFilterSort] = useState<FilterSort>({
+    runtimeFilter: [],
+    genreFilter: [],
+    decadeFilter: [],
+    sortSetting: null,
   });
   let [ratingCount, setRatingCount] = useState(0);
   let [avgRating, setAvgRating] = useState('0.00');
@@ -42,6 +49,15 @@ function RatingPage() {
         ...prevValue,
         [name]: selected,
       };
+    });
+  };
+
+  const handleClear = () => {
+    setFilterSort({
+      runtimeFilter: [],
+      genreFilter: [],
+      decadeFilter: [],
+      sortSetting: null,
     });
   };
 
@@ -207,6 +223,7 @@ function RatingPage() {
               isMulti
               name='runtimeFilter'
               options={runtimes}
+              value={filterSort.runtimeFilter}
               placeholder='Runtime'
               onChange={handleChange}
             />
@@ -214,6 +231,7 @@ function RatingPage() {
               isMulti
               name='genreFilter'
               options={genres}
+              value={filterSort.genreFilter}
               placeholder='Genre'
               onChange={handleChange}
             />
@@ -221,6 +239,7 @@ function RatingPage() {
               isMulti
               name='decadeFilter'
               options={getDecades()}
+              value={filterSort.decadeFilter}
               placeholder='Decade'
               onChange={handleChange}
             />
@@ -228,9 +247,13 @@ function RatingPage() {
               isClearable
               name='sortSetting'
               options={sorts}
+              value={filterSort.sortSetting}
               placeholder='Sort'
               onChange={handleChange}
             />
+          </div>
+          <div className='filter-sort-clear-button' onClick={handleClear}>
+            Clear
           </div>
           <div className='movie-grid'>{getMovies()}</div>
         </>

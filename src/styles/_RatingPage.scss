@@ -30,6 +30,15 @@
   font-family: 'Open Sans', sans-serif;
 }
 
+.filter-sort-clear-button {
+  background-color: $secondary-color;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 auto;
+  padding: $spacing-normal;
+  width: fit-content;
+}
+
 .rating-page-info-wrapper {
   align-items: center;
   display: flex;
