@@ -9,11 +9,6 @@ import { RootState } from '../rootState';
 import MovieCard from './MovieCard';
 import NoData from './NoData';
 
-type SelectedOption = {
-  value: string;
-  label: string;
-};
-
 function WatchNextPage() {
   const user = useSelector((state: RootState) => state.user);
   let isLoading = useSelector((state: RootState) => state.isLoading);
@@ -24,11 +19,11 @@ function WatchNextPage() {
     (state: RootState) => state.isRatingUpdated
   );
   let [movies, setMovies] = useState<Array<OMDbMovie>>([]);
-  let [filterSort, setFilterSort] = useState({
-    runtimeFilter: [] as SelectedOption[],
-    genreFilter: [] as SelectedOption[],
-    decadeFilter: [] as SelectedOption[],
-    sortSetting: {} as SelectedOption,
+  let [filterSort, setFilterSort] = useState<FilterSort>({
+    runtimeFilter: [],
+    genreFilter: [],
+    decadeFilter: [],
+    sortSetting: null,
   });
   let [movieCount, setMovieCount] = useState(0);
   let [hasMovies, setHasMovies] = useState(true);
@@ -65,6 +60,15 @@ function WatchNextPage() {
         ...prevValue,
         [name]: selected,
       };
+    });
+  };
+
+  const handleClear = () => {
+    setFilterSort({
+      runtimeFilter: [],
+      genreFilter: [],
+      decadeFilter: [],
+      sortSetting: null,
     });
   };
 
@@ -189,6 +193,7 @@ function WatchNextPage() {
               isMulti
               name='runtimeFilter'
               options={runtimes}
+              value={filterSort.runtimeFilter}
               placeholder='Runtime'
               onChange={handleChange}
             />
@@ -196,6 +201,7 @@ function WatchNextPage() {
               isMulti
               name='genreFilter'
               options={genres}
+              value={filterSort.genreFilter}
               placeholder='Genre'
               onChange={handleChange}
             />
@@ -203,6 +209,7 @@ function WatchNextPage() {
               isMulti
               name='decadeFilter'
               options={getDecades()}
+              value={filterSort.decadeFilter}
               placeholder='Decade'
               onChange={handleChange}
             />
@@ -210,9 +217,13 @@ function WatchNextPage() {
               isClearable
               name='sortSetting'
               options={sorts}
+              value={filterSort.sortSetting}
               placeholder='Sort'
               onChange={handleChange}
             />
+          </div>
+          <div className='filter-sort-clear-button' onClick={handleClear}>
+            Clear
           </div>
           <div className='movie-grid'>{getMovies()}</div>
         </>

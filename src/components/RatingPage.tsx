@@ -10,18 +10,6 @@ import { loading, updateRating } from '../actions';
 import MovieCard from './MovieCard';
 import NoData from './NoData';
 
-type SelectedOption = {
-  value: string;
-  label: string;
-};
-
-type FilterSort = {
-  runtimeFilter: SelectedOption[];
-  genreFilter: SelectedOption[];
-  decadeFilter: SelectedOption[];
-  sortSetting: SelectedOption | null;
-};
-
 function RatingPage() {
   const user = useSelector((state: RootState) => state.user);
   let isLoading = useSelector((state: RootState) => state.isLoading);
