@@ -26,12 +26,13 @@ function MovieCard(props: MovieCardProps) {
   const posterRef = useRef<HTMLImageElement>(null);
   const { movieInfo, isMovieGridParent } = props;
 
-  const { id, poster, title, rating, timestamp } =
+  const { id, poster, title, releaseDate, rating, timestamp } =
     'imdbID' in movieInfo
       ? {
           id: movieInfo.imdbID,
           poster: movieInfo.Poster,
           title: movieInfo.Title,
+          releaseDate: movieInfo.Released,
           rating: movieInfo.imdbRating,
           timestamp: movieInfo.Timestamp,
         }
@@ -156,9 +157,12 @@ function MovieCard(props: MovieCardProps) {
               movieInfo={movieInfo}
             />
           )}
-          <button onClick={handleRate}>
-            {'imdbID' in movieInfo ? 'Rate' : 'Edit'}
-          </button>
+          {!isNaN(new Date(releaseDate).getTime()) &&
+            new Date().getTime() >= new Date(releaseDate).getTime() && (
+              <button onClick={handleRate}>
+                {'imdbID' in movieInfo ? 'Rate' : 'Edit'}
+              </button>
+            )}
           {!('imdbID' in movieInfo) && (
             <button onClick={handleDelete}>Delete</button>
           )}

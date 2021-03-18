@@ -237,13 +237,16 @@ function MoviePage() {
                   <img src={imdbLogo} alt='IMDb' />
                 </a>
               </div>
-              <div
-                className='movie-page-icon-action'
-                onClick={handleRate}
-                title={'imdbID' in movieInfo ? 'Rate' : 'Edit'}
-              >
-                {'imdbID' in movieInfo ? <Grade /> : <Edit />}
-              </div>
+              {!isNaN(new Date(releaseDate).getTime()) &&
+                new Date().getTime() >= new Date(releaseDate).getTime() && (
+                  <div
+                    className='movie-page-icon-action'
+                    onClick={handleRate}
+                    title={'imdbID' in movieInfo ? 'Rate' : 'Edit'}
+                  >
+                    {'imdbID' in movieInfo ? <Grade /> : <Edit />}
+                  </div>
+                )}
               {'imdbID' in movieInfo ? (
                 <div
                   className='movie-page-icon-action'
