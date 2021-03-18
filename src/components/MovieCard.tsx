@@ -126,7 +126,10 @@ function MovieCard(props: MovieCardProps) {
   return (
     <div className='movie-card-wrapper'>
       {timestamp && (
-        <div className='movie-card-timestamp' title='Added on'>
+        <div
+          className='movie-card-timestamp'
+          title={'imdbID' in movieInfo ? 'Added on' : 'Rated on'}
+        >
           {getTimestamp()}
         </div>
       )}
