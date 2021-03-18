@@ -203,7 +203,7 @@ function MoviePage() {
   return (
     <div
       className='movie-page-wrapper'
-      style={pageWrapperStyle}
+      style={id ? pageWrapperStyle : {}}
       ref={pageWrapperRef}
     >
       {isLoading && (
