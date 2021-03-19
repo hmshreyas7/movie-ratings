@@ -464,7 +464,7 @@ app.post('/api/rate', (req, res) => {
               if (err) {
                 console.log(err);
               } else {
-                res.send('Rating received');
+                res.send('Rating added');
               }
             }
           );
@@ -701,7 +701,7 @@ app.delete('/api/delete-watch-next/:userID/:movieID', (req, res) => {
             if (err) {
               console.log(err);
             } else {
-              res.send('Deleted from Watch Next');
+              res.send('Removed from Watch Next');
             }
           }
         );

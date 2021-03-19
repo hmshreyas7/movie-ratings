@@ -3,7 +3,11 @@ import React from 'react';
 import { Button, Dialog, DialogTitle } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../rootState';
-import { toggleWatchNext, updateRating } from '../actions';
+import {
+  toggleActionConfirmation,
+  toggleWatchNext,
+  updateRating,
+} from '../actions';
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
@@ -22,12 +26,24 @@ function ConfirmationDialog(props: ConfirmationDialogProps) {
     axios
       .delete(`/api/delete-watch-next/${user.uid}/${movieID}`)
       .then((res) => {
-        console.log(res.data);
         dispatch(toggleWatchNext());
         onClose();
+        dispatch(
+          toggleActionConfirmation({
+            isOpen: true,
+            status: 'success',
+            message: res.data,
+          })
+        );
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(
+          toggleActionConfirmation({
+            isOpen: true,
+            status: 'error',
+            message: err,
+          })
+        );
       });
   };
 
@@ -35,12 +51,24 @@ function ConfirmationDialog(props: ConfirmationDialogProps) {
     axios
       .delete(`/api/delete-rating/${user.uid}/${movieID}`)
       .then((res) => {
-        console.log(res.data);
         dispatch(updateRating(true));
         onClose();
+        dispatch(
+          toggleActionConfirmation({
+            isOpen: true,
+            status: 'success',
+            message: res.data,
+          })
+        );
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(
+          toggleActionConfirmation({
+            isOpen: true,
+            status: 'error',
+            message: err,
+          })
+        );
       });
   };
 

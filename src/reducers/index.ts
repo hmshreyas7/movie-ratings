@@ -7,6 +7,7 @@ import isLoadingReducer from './isLoading';
 import isRatingUpdatedReducer from './isRatingUpdated';
 import regionCodeReducer from './regionCode';
 import isWatchNextToggledReducer from './isWatchNextToggled';
+import actionConfirmationReducer from './actionConfirmation';
 import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   isRatingUpdated: isRatingUpdatedReducer,
   regionCode: regionCodeReducer,
   isWatchNextToggled: isWatchNextToggledReducer,
+  actionConfirmation: actionConfirmationReducer,
 });
 
 export default rootReducer;

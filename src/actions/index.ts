@@ -66,3 +66,10 @@ export const toggleWatchNext = () => {
     type: 'TOGGLE_WATCH_NEXT',
   };
 };
+
+export const toggleActionConfirmation = (confirmation: ActionConfirmation) => {
+  return {
+    type: 'TOGGLE_ACTION_CONFIRMATION',
+    payload: confirmation,
+  };
+};

@@ -18,6 +18,7 @@ import imdbLogo from '../assets/imdb-logo.png';
 import ConfirmationDialog from './ConfirmationDialog';
 import axios from 'axios';
 import {
+  toggleActionConfirmation,
   loading,
   toggleWatchNext,
   updateRating,
@@ -180,11 +181,23 @@ function MoviePage() {
             timestamp: new Date().toString(),
           })
           .then((res) => {
-            console.log(res.data);
             dispatch(toggleWatchNext());
+            dispatch(
+              toggleActionConfirmation({
+                isOpen: true,
+                status: 'success',
+                message: res.data,
+              })
+            );
           })
           .catch((err) => {
-            console.log(err);
+            dispatch(
+              toggleActionConfirmation({
+                isOpen: true,
+                status: 'error',
+                message: err,
+              })
+            );
           });
       } else {
         history.push('/login');

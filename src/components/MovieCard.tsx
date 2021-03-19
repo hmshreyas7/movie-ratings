@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
+  toggleActionConfirmation,
   setMoviePosterPosition,
   toggleWatchNext,
   viewMovieDetails,
@@ -83,11 +84,23 @@ function MovieCard(props: MovieCardProps) {
           timestamp: new Date().toString(),
         })
         .then((res) => {
-          console.log(res.data);
           dispatch(toggleWatchNext());
+          dispatch(
+            toggleActionConfirmation({
+              isOpen: true,
+              status: 'success',
+              message: res.data,
+            })
+          );
         })
         .catch((err) => {
-          console.log(err);
+          dispatch(
+            toggleActionConfirmation({
+              isOpen: true,
+              status: 'error',
+              message: err,
+            })
+          );
         });
     } else {
       history.push('/login');

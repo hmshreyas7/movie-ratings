@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import ActionConfirmation from './components/ActionConfirmation';
 import LoginPage from './components/LoginPage';
 import MovieGrid from './components/MovieGrid';
 import MoviePage from './components/MoviePage';
@@ -51,6 +52,7 @@ function App() {
           <MovieGrid />
         </Route>
       </Switch>
+      <ActionConfirmation />
     </>
   );
 }

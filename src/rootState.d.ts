@@ -10,4 +10,5 @@ type RootState = Readonly<{
   isRatingUpdated: boolean;
   regionCode: string;
   isWatchNextToggled: boolean;
+  actionConfirmation: ActionConfirmation;
 }>;

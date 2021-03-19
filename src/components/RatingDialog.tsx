@@ -5,7 +5,7 @@ import { Rating } from '@material-ui/lab';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../rootState';
 import { ErrorOutline } from '@material-ui/icons';
-import { updateRating } from '../actions';
+import { toggleActionConfirmation, updateRating } from '../actions';
 
 interface RatingDialogProps {
   isOpen: boolean;
@@ -75,9 +75,15 @@ function RatingDialog(props: RatingDialogProps) {
           timestamp: new Date().toString(),
         })
         .then((res) => {
-          console.log(res.data);
           dispatch(updateRating(true));
           onClose();
+          dispatch(
+            toggleActionConfirmation({
+              isOpen: true,
+              status: 'success',
+              message: res.data,
+            })
+          );
 
           if ('imdbID' in movieInfo && movieInfo.Timestamp) {
             axios
@@ -91,7 +97,13 @@ function RatingDialog(props: RatingDialogProps) {
           }
         })
         .catch((err) => {
-          console.log(err);
+          dispatch(
+            toggleActionConfirmation({
+              isOpen: true,
+              status: 'error',
+              message: err,
+            })
+          );
         });
     }
   };
